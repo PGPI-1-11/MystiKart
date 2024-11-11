@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MystiKart{% endblock %}</title>
+    
+    <!-- CSS de la tienda -->
+
+    <!-- Aquí se pueden agregar otras etiquetas meta o scripts que sean comunes -->
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{% url 'home' %}">Inicio</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Contenido principal de cada página -->
+    <main>
+        {% block content %}
+        <!-- Este bloque será sobrescrito en las plantillas hijas -->
+        {% endblock %}
+    </main>
+
+    <!-- Pie de página -->
+    <footer>
+        <p>&copy; 2024 MystiKart - Todos los derechos reservados</p>
+    </footer>
+</body>
+</html>
