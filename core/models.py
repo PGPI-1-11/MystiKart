@@ -16,7 +16,7 @@ class Category(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)  # Para categorías anidadas
-    slug = models.SlugField(unique=True)  # URL amigable
+    slug = models.SlugField(unique=True)
 
     def __str__(self):
         return self.name

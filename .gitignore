@@ -1,0 +1,13 @@
+# Archivos de bytecode de Python
+__pycache__/
+*.pyc
+
+# Base de datos
+db.sqlite3
+
+# Archivos de registro y carpetas
+log/
+*.log
+
+venv
+MystiKart/db.sqlite3
