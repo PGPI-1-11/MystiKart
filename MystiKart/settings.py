@@ -26,12 +26,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'auth_user',
     'core',
-    'django_use_email_as_username.apps.DjangoUseEmailAsUsernameConfig',
-    'custom_user.apps.CustomUserConfig',
+    'custom_user',
+    'order',
     'product',
     'shoppingCart',
-    'order',
 ]
 
 AUTH_USER_MODEL = 'custom_user.User'
