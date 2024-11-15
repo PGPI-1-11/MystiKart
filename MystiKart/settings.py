@@ -26,9 +26,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'auth_user',
     'core',
-    'custom_user',
+    'django_use_email_as_username.apps.DjangoUseEmailAsUsernameConfig',
+    'custom_user.apps.CustomUserConfig',
     'order',
     'product',
     'shoppingCart',
@@ -47,6 +47,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'MystiKart.urls'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
 
 TEMPLATES = [
