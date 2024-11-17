@@ -20,6 +20,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'django_use_email_as_username.apps.DjangoUseEmailAsUsernameConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -27,14 +28,18 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'core',
-    'django_use_email_as_username.apps.DjangoUseEmailAsUsernameConfig',
-    'custom_user.apps.CustomUserConfig',
+    'custom_user.apps.CustomUserConfig',  # Solo esta línea para custom_user
     'order',
     'product',
     'shoppingCart',
 ]
 
+
+
 AUTH_USER_MODEL = 'custom_user.User'
+
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

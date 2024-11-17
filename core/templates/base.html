@@ -10,6 +10,9 @@
 </head>
 <body>
     {% include 'header.html' %}
+    <li style="float: right;">
+        <a href="{%url 'registro'%}" class="registro"><i class="registro"></i></a>
+    </li>
 
     <main>
         {% block content %}
