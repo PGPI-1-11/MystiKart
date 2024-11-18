@@ -1,8 +1,55 @@
 <header>
     <nav>
-        <ul>
-            <li><a href="{% url 'home' %}">Inicio</a></li>
-            <li><a href="{% url 'registro' %}">Registrarse</a></li>
+        <ul class="flex justify-center space-x-8">
+            <li><a href="{% url 'home' %}" class="text-white">Inicio</a></li>
+            
+            {% if user.is_authenticated %}
+                <li class="text-white">Bienvenido, {{ user.email }}</li>
+                <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">Cerrar sesión</button>
+                </form>                
+                {% else %}
+                <li><a href="{% url 'login' %}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">Iniciar sesión</a></li>
+            {% endif %}
         </ul>
     </nav>
 </header>
+
+
+<style>
+    header {
+        background-color: #5e239d; 
+        padding: 10px 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    nav {
+        display: flex;
+        justify-content: center;
+    }
+
+    ul {
+        list-style: none;
+        display: flex;
+        gap: 20px;
+        margin: 0;
+        padding: 0;
+    }
+
+    li {
+        display: inline;
+    }
+
+    a {
+        text-decoration: none;
+        color: #f1e8b8;
+        font-size: 16px;
+        font-weight: bold;
+        transition: color 0.3s ease;
+    }
+
+    a:hover {
+        color: #c3b267;
+    }
+</style>
