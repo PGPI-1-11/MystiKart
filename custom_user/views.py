@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from .forms import RegistrationForm, MyAuthForm
 from django.contrib.auth.views import LoginView
-from order.models import Order, Review
 from custom_user.models import User
 from django.contrib.auth.decorators import user_passes_test
 from django.http import Http404, HttpResponseBadRequest
