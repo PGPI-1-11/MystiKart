@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views import View
 
-
+from MystiKart.custom_user.models import User
 from .forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.views import LoginView, CreateUserView
 

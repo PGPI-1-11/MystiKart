@@ -11,6 +11,6 @@ from django.urls import path, include
 urlpatterns = [
     path('', views.home,name='home'),
     path('admin/', admin.site.urls),
-    path('register/', RegistrationView.as_view(), name='register'),
-
+    path('user/', include('custom_user.urls')),
+    path('',include('core.urls')),
 ]
