@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>Detalle del Carrito</h2>
+<ul>
+    {% for item in cart_items %}
+        <li>{{ item.product.name }} - Cantidad: {{ item.quantity }} - Precio: {{ item.product.price }}</li>
+    {% endfor %}
+</ul>
+<p>Total: {{ total }}</p>
+
+<h3>Ingresa tu dirección de envío</h3>
+<form method="post" novalidate>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Confirmar dirección de envío</button>
+</form>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+
+<a href="{% url 'checkout_view' %}">Proceder al Pago</a>
+
+{% endblock %}
