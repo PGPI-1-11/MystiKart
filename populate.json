@@ -3,7 +3,7 @@
         "model": "custom_user.User",
         "fields": {
             "email": "admin@admin.com",
-            "password": "pbkdf2_sha256$600000$ShBdsfn43U1wJUSNmJAvHO$sKdNbXaEA5QJKYFa7giD/jFUUzrX0kmdymemEWmWFlg=",
+            "password": "adm1n",
             "is_superuser": true,
             "is_staff": true
         }
@@ -12,7 +12,7 @@
         "model": "custom_user.User",
         "fields": {
             "email": "user@user.com",
-            "password": "pbkdf2_sha256$600000$ShBdsfn43U1wJUSNmJAvHO$sKdNbXaEA5QJKYFa7giD/jFUUzrX0kmdymemEWmWFlg=",
+            "password": "us3r",
             "is_superuser": false,
             "is_staff": false
         }

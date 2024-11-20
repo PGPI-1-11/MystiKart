@@ -6,7 +6,6 @@ from shoppingCart.models import CartItem
 def home(request):
     mensaje = ""
     mensaje_cantidad = ""
-    products = Product.objects.all()
     categories = Category.objects.all()
     shoppingCarts = CartItem.objects.filter(user_id=request.user.id, is_processed=False)
     
@@ -18,29 +17,24 @@ def home(request):
     
     total = calcular_total(shoppingCarts)
 
-    category = request.GET.get('category', None)
-    query = request.GET.get('q')
-
-    if category and query:
-        products = Product.objects.filter(category__name=category, name__icontains=query)
-    elif category:
-        products = Product.objects.filter(category__name=category)
-    elif query:
-        products = Product.objects.filter(name__icontains=query)
+    category_filter = request.GET.get('category', None)
+    if category_filter:
+        products = Product.objects.filter(category__name=category_filter)
+    else:
+        products = Product.objects.all()
 
     no_products = not products.exists()
     
     return render(request, 'home.html', {
         'categories': categories,
         'products': products,
-        'category_filter': category,
+        'category_filter': category_filter,
         'cart_items': shoppingCarts,
         'precio_total': total,
         'mensaje': mensaje,
         'mensaje_cantidad': mensaje_cantidad,
         'no_products': no_products
     })
-
 
 def calcular_total(items):
     precio_total = 0
