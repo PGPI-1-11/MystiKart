@@ -12,6 +12,9 @@
                 {% else %}
                 <li><a href="{% url 'login' %}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">Iniciar sesión</a></li>
             {% endif %}
+            <li style="float: right;">
+                <a href="{% url 'cart_detail' %}" class="cart-button"><i class="fa fa-shopping-cart"></i> </a>
+            </li>
         </ul>
     </nav>
 </header>
