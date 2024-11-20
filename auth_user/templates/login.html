@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Iniciar sesión</title>
+</head>
+<body>
+    <h1>Iniciar sesión</h1>
+    <form action="{% url 'login' %}" method="post">
+        {% csrf_token %}
+        <input type="email" name="username" placeholder="Correo electrónico">
+        <input type="password" name="password" placeholder="Contraseña">
+        <input type="submit" value="Iniciar sesión">
+    </form>
+</body>
+</html>

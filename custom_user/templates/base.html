@@ -1,5 +1,4 @@
-<!-- core/templates/base.html -->
- 
+<!-- templates/base.html -->
 
 <!DOCTYPE html>
 <html lang="es">
@@ -13,12 +12,10 @@
 </head>
 <body>
     {% include 'header.html' %}
-    <li style="float: right;">
-        <a href="{%url 'registro'%}" class="registro"><i class="registro"></i></a>
-    </li>
 
     <main>
         {% block content %}
+        <a href="{% url 'registro' %}">Registrarse</a>
         {% endblock %}
     </main>
 
