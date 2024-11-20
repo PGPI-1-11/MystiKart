@@ -11,6 +11,9 @@ urlpatterns = [
     path('', home,name='home'),
     path('admin/', admin.site.urls),
     path('product/', include('product.urls')),
+    path('shoppingCart/', include('shoppingCart.urls')),  
+    path('user/', include('custom_user.urls')),
+
 ]
 
 if settings.DEBUG:

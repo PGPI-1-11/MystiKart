@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>Revisión del Pedido</h2>
+<ul>
+    {% for item in cart_items %}
+        <li>{{ item.product.name }} - Cantidad: {{ item.quantity }} - Precio: {{ item.product.price }}</li>
+    {% endfor %}
+</ul>
+<p>Total: {{ total }}</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Confirmar Pedido</button>
+</form>
+
+{% endblock %}
