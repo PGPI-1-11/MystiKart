@@ -19,6 +19,7 @@
     },
     {
         "model": "product.Category",
+        "pk": 1,
         "fields": {
             "name": "Cristales y Minerales",
             "parent_category": null
@@ -26,6 +27,7 @@
     },
     {
         "model": "product.Category",
+        "pk": 2,
         "fields": {
             "name": "Velas y Sahumerios",
             "parent_category": null
@@ -33,10 +35,11 @@
     },
     {
         "model": "product.Product",
+        "pk": 1,
         "fields": {
             "name": "Cuarzo Rosa",
             "description": "Piedra de amor y paz, ideal para atraer la tranquilidad.",
-            "price": 25.00,
+            "price": "25.00",
             "stock": 20,
             "is_available": true,
             "category": 1,
@@ -45,6 +48,7 @@
     },
     {
         "model": "product.Product",
+        "pk": 2,
         "fields": {
             "name": "Vela de Canela",
             "description": "Vela aromática de canela para atraer la abundancia.",
@@ -53,6 +57,32 @@
             "is_available": true,
             "category": 2,
             "image": "media/item_images/vela_canela.jpg"
+        }
+    },
+    {
+        "model": "product.Product",
+        "pk": 3,
+        "fields": {
+            "name": "Vela de Vainilla",
+            "description": "Vela aromática de vainilla para un ambiente acogedor.",
+            "price": 12.00,
+            "stock": 0,
+            "is_available": true,
+            "category": 2,
+            "image": "media/item_images/vela_vainilla.jpg"
+        }
+    },
+    {
+        "model": "product.Product",
+        "pk": 4,
+        "fields": {
+            "name": "Vela de Jazmín",
+            "description": "Vela aromática de jazmín para un ambiente romántico.",
+            "price": 14.00,
+            "stock": 35,
+            "is_available": true,
+            "category": 2,
+            "image": "media/item_images/vela_jazmin.jpg"
         }
     }
 ]
