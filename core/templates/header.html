@@ -2,24 +2,29 @@
     <nav>
         <ul class="flex justify-center space-x-8">
             <li><a href="{% url 'home' %}" class="text-white">Inicio</a></li>
-            
+
             {% if user.is_authenticated %}
                 <li class="text-white">Bienvenido, {{ user.email }}</li>
                 <form action="{% url 'logout' %}" method="post">
                     {% csrf_token %}
-                    <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">Cerrar sesión</button>
-                </form>                
-                {% else %}
-                <li><a href="{% url 'login' %}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">Iniciar sesión</a></li>
+                    <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">
+                        Cerrar sesión
+                    </button>
+                </form>
+            {% else %}
+                <li>
+                    <a href="{% url 'login' %}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
+                        Iniciar sesión
+                    </a>
+                </li>
             {% endif %}
         </ul>
     </nav>
 </header>
 
-
 <style>
     header {
-        background-color: #5e239d; 
+        background-color: #5e239d; /* Morado oscuro */
         padding: 10px 20px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     }
@@ -43,13 +48,18 @@
 
     a {
         text-decoration: none;
-        color: #f1e8b8;
+        color: #f1e8b8; /* Dorado suave */
         font-size: 16px;
         font-weight: bold;
         transition: color 0.3s ease;
     }
 
     a:hover {
-        color: #c3b267;
+        color: #c3b267; /* Dorado más vibrante al pasar el ratón */
+    }
+
+    button {
+        border: none;
+        cursor: pointer;
     }
 </style>
