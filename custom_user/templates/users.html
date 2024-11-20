@@ -1,0 +1,97 @@
+<!-- templates/users.html-->
+
+{% extends 'base.html' %}
+
+{% block title %} Lista de Usuarios {% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-3 gap-6">
+    <div class="col-span-3">
+        <div class="mt-6 px-6 py-12 rounded-xl">
+            <div class="user-list">
+                <h2 class="mb-8 text-2xl text-center">Lista de Usuarios</h2>
+                <ul class="user-table">
+                    {% for user in users %}
+                    <li class="user-item">
+                        <div class="user-details">
+                            <strong>Correo Electrónico:</strong> {{ user.email }}
+                        </div>
+                        <div class="user-role">
+                            {% if user.is_staff %}
+                            <span class="staff-label">Equipo</span>
+                            {% else %}
+                            <span class="user-label">Usuario</span>
+                            {% endif %}
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 0;
+    }
+
+    .user-list {
+        max-width: 600px;
+        margin: 20px auto;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+
+    .user-table {
+        margin-top: 20px;
+        /* Adjust the top margin to create space between header and table */
+        padding: 0;
+    }
+
+    .user-item {
+        list-style: none;
+        border-bottom: 1px solid #ddd;
+        padding: 10px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .user-details {
+        flex-grow: 1;
+    }
+
+    .user-role {
+        text-align: right;
+    }
+
+    .staff-label,
+    .user-label {
+        font-weight: bold;
+        padding: 4px 8px;
+        border-radius: 4px;
+        text-transform: uppercase;
+    }
+
+    .staff-label {
+        color: #ff5858;
+        /* Red for staff */
+        background-color: #ffe6e6;
+        /* Light red background */
+    }
+
+    .user-label {
+        color: #52c41a;
+        /* Green for users */
+        background-color: #e6f7ff;
+        /* Light blue background */
+    }
+</style>
+
+{% endblock %}
