@@ -1,9 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
 <h2>Pedido Confirmado</h2>
 <p>Gracias por tu compra. Tu pedido ha sido procesado.</p>
-<a href="/">Volver al Inicio</a>
-
+<a href="{% url 'home' %}">Volver al Inicio</a>
 {% endblock %}

@@ -271,7 +271,7 @@
     <p>Explora nuestros productos y disfruta de una experiencia de compra fácil y segura.</p>
 
     <div class="container">
-        <!-- Sección de filtro (izquierda) -->
+        <!-- Filtro de Categorías -->
         <div class="card-wrapper">
             <div class="category-filter">
                 <h2>Filtrar por Categoría</h2>
@@ -286,27 +286,28 @@
             </div>
         </div>
 
-        <!-- Sección de productos (centro) -->
+        <!-- Productos -->
         <div class="card-wrapper">
             <div class="products-section">
                 <div class="row">
                     {% if category_filter %}
                         <h2 class="category-title">{{ category_filter }}</h2>
                     {% endif %}
-
+            
                     {% if no_products %}
                         <p>No hay productos disponibles en esta categoría.</p>
                     {% else %}
                         <div class="grid-products">
                             {% for product in products %}
                                 <div class="card">
-                                    <div class="card-img-wrapper">
-                                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                                    </div>
+                                    <a href="{% url 'product:product_info' pk=product.id %}">
+                                        <div class="card-img-wrapper">
+                                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                                        </div>
+                                    </a>
                                     <div class="card-body">
                                         <h3 class="product-name text-xl">{{ product.name }}</h3>
                                         <p class="product-price text-xl">{{ product.price }} €</p>
-                                        
                                         <div class="stock badge {% if product.is_in_stock %}bg-success{% else %}bg-danger{% endif %}">
                                             {% if product.is_in_stock %}
                                                 Quedan: {{ product.stock }}
@@ -314,50 +315,67 @@
                                                 Sin productos
                                             {% endif %}
                                         </div>
-
+                                    
+                                        <!-- Formulario para añadir al carrito -->
+                                        <form action="{% url 'shoppingCart:add_to_cart' product.id %}" method="POST">
+                                            {% csrf_token %}
+                                            <input type="number" name="quantity" min="1" max="{{ product.stock }}" value="1" class="quantity-input">
+                                            <button type="submit" class="bg-blue-500 text-white py-1 px-4 rounded">
+                                                Añadir al carrito
+                                            </button>
+                                        </form>                                                                              
                                     </div>
                                 </div>
                             {% endfor %}
                         </div>
                     {% endif %}
                 </div>
-            </div>
+            </div>            
         </div>
 
-        <!-- Sección derecha (Carrito de compras y Localizador de pedidos) -->
+        <!-- Carrito de Compras -->
         <div>
-            <!-- Carrito de compras -->
             <div class="card-wrapper cart-section">
                 <h2 class="text-2xl text-center">Carrito de la Compra</h2>
                 <div class="cart-items">
-                    {% for cart_item in cart_items %}
-                        <div class="cart-item">
-                            <p>{{ cart_item.quantity }} x {{ cart_item.product.name }}</p>
-                            <p>{{ cart_item.quantity }} x {{ cart_item.product.price }} €</p>
-                        </div>
-                    {% endfor %}
+                    {% if cart_items %}
+                        {% for cart_item in cart_items %}
+                            <div class="cart-item">
+                                <p>{{ cart_item.quantity }} x {{ cart_item.product.name }}</p>
+                                <p>{{ cart_item.subtotal }} €</p>
+                                <!-- Formulario para eliminar una unidad -->
+                                <form method="post" action="{% url 'shoppingCart:remove_from_cart' cart_item.product.id %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="next" value="{% url 'home' %}">
+                                    <button type="submit" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition">
+                                        Quitar 1
+                                    </button>
+                                </form>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>El carrito está vacío.</p>
+                    {% endif %}
                 </div>
                 <div class="total">
                     <p>Total: {{ precio_total }} €</p>
                 </div>
                 <p class="shipping-message">El envío se calcula en la pasarela de pagos.<br> Envío gratuito a partir de 100€</p>
-                <p style="color: red;">{{ mensaje }}</p>
             </div>
+        </div>
 
-            <!-- Localizador de pedidos -->
-            <div class="card-wrapper search-section">
-                <h2 class="text-2xl text-center">Localiza tu pedido</h2>
-                <div class="px-6 py-12 rounded-xl flex items-center justify-center">
-                    <form action="search_order" method="get" class="search-form">
-                        <input type="text" name="q" placeholder="Introduce el localizador" class="form-control">
-                        <button type="submit">
-                            <i class="fa fa-search"></i> Buscar
-                        </button>
-                    </form>
-                </div>
+        <!-- Localizador de Pedidos -->
+        <div class="card-wrapper search-section">
+            <h2 class="text-2xl text-center">Localiza tu pedido</h2>
+            <div class="px-6 py-12 rounded-xl flex items-center justify-center">
+                <form action="search_order" method="get" class="search-form">
+                    <input type="text" name="q" placeholder="Introduce el localizador" class="form-control">
+                    <button type="submit">
+                        <i class="fa fa-search"></i> Buscar
+                    </button>
+                </form>
             </div>
         </div>
     </div>
 </main>
-
 {% endblock %}

@@ -23,7 +23,10 @@
                 </li>
             {% endif %}
             <li style="float: right;">
-                <a href="{% url 'cart_detail' %}" class="cart-button"><i class="fa fa-shopping-cart"></i> </a>
+                <a href="{% url 'shoppingCart:cart_detail' %}" class="cart-button">
+                    <i class="fa fa-shopping-cart"></i>
+                    <span class="cart-total">Total: 0 €</span>
+                </a>
             </li>
         </ul>
     </nav>
@@ -46,5 +49,10 @@
         padding: 8px 16px;
         display: inline-block;
         transition: background-color 0.3s;
+    }
+    .cart-total {
+        font-size: 0.9rem;
+        color: #fff;
+        margin-left: 5px;
     }
 </style>

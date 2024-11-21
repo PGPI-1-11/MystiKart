@@ -1,4 +1,4 @@
-{% extends 'core/base.html' %}
+{% extends 'base.html' %}
 
 {% block title %} Info {% endblock %}
 
@@ -43,7 +43,7 @@
                         </p>
                         
                         
-                        <form id="miFormulario" action="{% url 'add_to_cart' product.id %}" method="GET">
+                        <form id="miFormulario" action="{% url 'shoppingCart:add_to_cart' product.id %}" method="GET">
                             <input type="number" name="cantidad" id="cantidad" min="0" required>
                             <button type="submit" class="bg-transparent text-black px-4 py-1 focus:outline-none">
                                 <i class="fa fa-plus-circle"></i>
@@ -79,7 +79,7 @@
                     {% endfor %}
                     <p class="text-right font-bold border-t"> Total: {{ precio_total }} €</p>
                     
-                    <a href="{% url 'checkout' %}" class="text-center text-xl font-awesome mt-1 bg-blue-500 text-white px-4 py-2 rounded">Comprar</a>
+                    <a href="{% url 'shoppingCart:checkout_view' %}" class="text-center text-xl font-awesome mt-1 bg-blue-500 text-white px-4 py-2 rounded">Comprar</a>
                     <p class="shipping-message">El envío se calcula en la pasarela de pagos.<br> Envío gratuito a partir de 100€</p>
                     <p style="color: red;">{{ mensaje }}</p>
                 

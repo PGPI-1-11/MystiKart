@@ -4,13 +4,19 @@ from core.views import calcular_total
 from product.models import Product, Category
 from shoppingCart.models import CartItem
 
+
 def home_view(request):
     categories = Category.objects.prefetch_related('product_set').all()
-    return render(request, 'catalog.html', {'categories': categories})
+    return render(request, 'home.html', {'categories': categories, 'products': products})
 
 def catalog_view(request):
     categories = Category.objects.prefetch_related('product_set').all()
-    return render(request, 'catalog.html', {'categories': categories})
+    return render(request, 'catalogo.html', {'categories': categories})
+
+def checkout_view(request):
+    cart_items = []  # Aquí se extraerían los artículos del carrito
+    total = 0  # Lógica para calcular el total
+    return render(request, 'checkout.html', {'cart_items': cart_items, 'total': total})
 
 def product_info(request, pk):
     mensaje = ""
@@ -26,7 +32,7 @@ def product_info(request, pk):
     
     total = calcular_total(shoppingCarts)
 
-    return render(request, 'product/info.html', {
+    return render(request, 'info.html', {
         'product': product,
         'cart_items': shoppingCarts,
         'precio_total': total,
