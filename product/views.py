@@ -7,6 +7,7 @@ from shoppingCart.models import CartItem
 
 def home_view(request):
     categories = Category.objects.prefetch_related('product_set').all()
+    products = Product.objects.all()
     return render(request, 'home.html', {'categories': categories, 'products': products})
 
 def catalog_view(request):

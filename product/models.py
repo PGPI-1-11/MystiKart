@@ -14,6 +14,16 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+class Brand(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+
+    class Meta:
+        ordering = ('name',)
+        verbose_name_plural='Brands'
+
+    def __str__(self):
+        return self.name
+    
 # Modelo de Producto
 class Product(models.Model):
     name = models.CharField(max_length=255)
@@ -22,6 +32,7 @@ class Product(models.Model):
     stock = models.IntegerField(default=0,validators=[MinValueValidator(0, message="El stock no puede ser negativo")])
     is_available = models.BooleanField(default=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='item_images', blank=True, null=True)
 
     def is_in_stock(self):
