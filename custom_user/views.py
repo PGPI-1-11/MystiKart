@@ -97,5 +97,4 @@ def enviar_correo(request, mensaje, email, descripcion, estado):
     plain_message = strip_tags(message)
     from_email = 'phonedoctorpgpi@gmail.com' 
     to_email = [email] 
-
     send_mail(subject, plain_message, from_email, to_email, html_message=message)

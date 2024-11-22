@@ -105,7 +105,6 @@ class RegistrationForm(UserCreationForm):
         
         return pass2
 
-
 class MyAuthForm(AuthenticationForm):
     error_messages = {
         'invalid_login': _(

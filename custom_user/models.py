@@ -1,7 +1,6 @@
 from django_use_email_as_username.models import BaseUser, BaseUserManager
 from django.db import models
 
-
 class User(BaseUser):
     first_name = models.CharField(max_length=30, blank=True, null=True, verbose_name="Nombre")
     last_name = models.CharField(max_length=30, blank=True, null=True, verbose_name="Apellidos")
