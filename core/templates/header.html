@@ -4,7 +4,7 @@
             <li><a href="{% url 'home' %}" class="text-white">Inicio</a></li>
             
             {% if user.is_authenticated %}
-                <li class="text-white">Bienvenido, {{ user.email }}</li>
+                <li class="text-white">Bienvenido, {{ user.first_name }}</li>
                 <form action="{% url 'logout' %}" method="post">
                     {% csrf_token %}
                     <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">Cerrar sesión</button>

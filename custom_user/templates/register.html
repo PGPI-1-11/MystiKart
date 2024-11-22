@@ -1,5 +1,3 @@
-<!-- templates/register.html -->
- 
 {% extends 'base.html' %}
 
 {% load widget_tweaks %}
@@ -9,15 +7,36 @@
         <h2 class="text-2xl font-bold mb-4">Registro</h2>
         <form method="post" action="{% url 'registro' %}">
             {% csrf_token %}
+
+            <!-- Datos Personales -->
+            <h3 class="text-xl font-bold mb-2">Datos Personales</h3>
             {% for field in form %}
-                <div class="mb-4">
-                    {{ field.label_tag }}
-                    {% render_field field class="w-full bg-gray-100 border-2 border-blue-500 p-2 rounded" %}
-                    {% for error in field.errors %}
-                        <p class="text-red-500">{{ error }}</p>
-                    {% endfor %}
-                </div>
+                {% if field.name in "first_name last_name email password1 password2" %}
+                    <div class="mb-4">
+                        {{ field.label_tag }}
+                        {% render_field field class="w-full bg-gray-100 border-2 border-blue-500 p-2 rounded" %}
+                        {% for error in field.errors %}
+                            <p class="text-red-500">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
             {% endfor %}
+
+            <!-- Dirección -->
+            <h3 class="text-xl font-bold mb-2">Dirección</h3>
+            {% for field in form %}
+                {% if field.name in "direccion ciudad codigo_postal pais" %}
+                    <div class="mb-4">
+                        {{ field.label_tag }}
+                        {% render_field field class="w-full bg-gray-100 border-2 border-blue-500 p-2 rounded" %}
+                        {% for error in field.errors %}
+                            <p class="text-red-500">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+            <!-- Botón de envío -->
             <button type="submit" class="bg-blue-500 px-4 py-2 rounded text-white font-bold hover:bg-blue-600 transition">Registrarse</button>
         </form>
     </div>
