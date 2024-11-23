@@ -28,6 +28,18 @@
                     <span class="cart-total">Total: 0 €</span>
                 </a>
             </li>
+            <form method="get" action="{% url 'product:search_product' %}">
+                <input type="text" name="q" placeholder="Buscar productos..." value="{{ query }}">
+                <select name="category">
+                    <option value="">Todas las categorías</option>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}" {% if category.id|stringformat:"s" == category_id %}selected{% endif %}>
+                        {{ category.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Buscar</button>
+            </form>
         </ul>
     </nav>
 </header>
