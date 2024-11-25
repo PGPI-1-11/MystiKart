@@ -10,10 +10,6 @@ def home_view(request):
     products = Product.objects.all()
     return render(request, 'home.html', {'categories': categories, 'products': products})
 
-def catalog_view(request):
-    categories = Category.objects.prefetch_related('product_set').all()
-    return render(request, 'catalogo.html', {'categories': categories})
-
 def checkout_view(request):
     cart_items = []  # Aquí se extraerían los artículos del carrito
     total = 0  # Lógica para calcular el total
