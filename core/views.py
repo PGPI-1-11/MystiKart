@@ -12,7 +12,7 @@ def home(request):
     brands = Brand.objects.all()
     cart = request.session.get('cart', {})
     cart_items = []
-    total = 0
+    precio_total = 0
     
     # Mensajes de sesión (si existen)
     if 'carrito_vacio' in request.session:
@@ -27,7 +27,7 @@ def home(request):
         try:
             product = Product.objects.get(id=product_id)
             subtotal = product.price * quantity
-            total += subtotal
+            precio_total += subtotal
             cart_items.append({
                 'product': product,
                 'quantity': quantity,
@@ -71,7 +71,7 @@ def home(request):
         'category_filter': category,
         'brand_filter': brand,
         'cart_items': cart_items,
-        'precio_total': total,
+        'precio_total': precio_total,
         'mensaje': mensaje,
         'mensaje_cantidad': mensaje_cantidad,
         'no_products': no_products,

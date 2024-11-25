@@ -9,17 +9,16 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
-<body>
+<body style="display: flex; flex-direction: column; min-height: 100vh; margin: 0;">
     <header>
         <nav>
             <ul>
-                
             </ul>
         </nav>
     </header>
     {% include 'header.html' %}
 
-    <main>
+    <main style="flex: 1;">
         {% block content %}
         {% endblock %}
     </main>
@@ -27,4 +26,3 @@
     {% include 'footer.html' %}
 </body>
 </html>
-

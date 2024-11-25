@@ -11,28 +11,43 @@ def home_view(request):
     return render(request, 'home.html', {'categories': categories, 'products': products})
 
 def checkout_view(request):
-    cart_items = []  # Aquí se extraerían los artículos del carrito
-    total = 0  # Lógica para calcular el total
-    return render(request, 'checkout.html', {'cart_items': cart_items, 'total': total})
+    cart_items = CartItem.objects.filter(user_id=request.user.id, is_processed=False)
+    precio_total = 0
+    for item in cart_items:
+        precio_total += item.product.price * item.quantity  
+
+    return render(request, 'checkout.html', {'cart_items': cart_items, 'precio_total': precio_total})
 
 def product_info(request, pk):
     mensaje = ""
     mensaje_cantidad = ""
     product = get_object_or_404(Product, pk=pk)
-    shoppingCarts = CartItem.objects.filter(user_id=request.user.id, is_processed=False)
-    
+    cart = request.session.get('cart', {})
+    cart_items = []
+    precio_total = 0
+
     if 'carrito_vacio' in request.session:
         mensaje = request.session.pop('carrito_vacio', None)
 
     if 'cantidad_superada' in request.session:
         mensaje_cantidad = request.session.pop('cantidad_superada', None)
     
-    total = calcular_total(shoppingCarts)
+
+    for product_id, quantity in cart.items():
+        product = Product.objects.get(id=product_id)
+        subtotal = product.price * quantity
+        precio_total += subtotal
+        cart_items.append({
+            'product': product,
+            'quantity': quantity,
+            'subtotal': subtotal,
+        })
+   
 
     return render(request, 'info.html', {
         'product': product,
-        'cart_items': shoppingCarts,
-        'precio_total': total,
+        'cart_items': cart_items,
+        'precio_total': precio_total,
         'mensaje': mensaje,
         'mensaje_cantidad': mensaje_cantidad,
     })
