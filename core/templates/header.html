@@ -1,68 +1,209 @@
-<header>
-    <nav>
-        <ul class="flex justify-center space-x-8">
-            <li><a href="{% url 'home' %}" class="text-white">Inicio</a></li>
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
 
-            {% if user.is_authenticated %}
-                <li class="text-white">Bienvenido, {{ user.first_name }}</li>
-                <form action="{% url 'logout' %}" method="post">
+<head>
+    <link rel="stylesheet" href="{% static 'core/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+    <header>
+        <div class="nav-container">
+
+            <!-- Left Section: Logo -->
+            <div class="logo-container">
+                <a href="{% url 'home' %}">
+                    <img src="{% static 'images/logo.jpeg' %}" alt="Logo" class="logo">
+                </a>
+            </div>
+
+            <!-- Center Section: Search Bar -->
+            <div class="search-container">
+                <form action="" method="get" class="search-form">
+                    <input type="text" name="q" placeholder="Buscar productos">
+                    <button type="submit">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Right Section: User Options -->
+            <div class="user-container">
+                {% if user.is_authenticated %}
+                <p class="welcome-text">Bienvenido, {{ user.first_name }}
+                <form action="{% url 'logout' %}" method="post" class="logout-form">
                     {% csrf_token %}
-                    <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">
+                    <button type="submit" class="logout-button">
                         Cerrar sesión
                     </button>
                 </form>
-            {% else %}
-                <li>
-                    <a href="{% url 'login' %}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
-                        Iniciar sesión
-                    </a>
-                </li>
-            {% endif %}
-            <li style="float: right;">
-                <a href="{% url 'cart_detail' %}" class="cart-button"><i class="fa fa-shopping-cart"></i> </a>
-            </li>
-        </ul>
-    </nav>
-</header>
+                </p>
+                {% else %}
+                <a href="{% url 'login' %}" class="login-button">Iniciar sesión</a>
+                {% endif %}
+            </div>
+
+            <!-- Cart Section -->
+            <div class="cart-container">
+                {% if not is_confirmation_page %}
+                <a href="{% url 'shoppingCart:cart_detail' %}" class="cart-button">
+                    <i class="fa fa-shopping-cart"></i>
+                    <span class="cart-total">Total: {{ precio_total }} €</span>
+                </a>
+                {% endif %}
+            </div>
+
+        </div>
+    </header>
+</body>
+
+</html>
 
 <style>
+    /* General Header Styling */
     header {
         background-color: #5e239d; /* Morado oscuro */
-        padding: 10px 20px;
+        padding: 12px 20px; /* Reducido el tamaño del header */
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     }
 
-    nav {
+    /* Estilo para el contenedor del logo y la barra de búsqueda */
+    .nav-container {
         display: flex;
-        justify-content: center;
+        justify-content: space-between; /* Alineación entre los elementos */
+        align-items: center;
+        width: 100%;
     }
 
-    ul {
-        list-style: none;
+    /* Contenedor de usuario y carrito: alineado a la derecha */
+    .user-container,
+    .cart-container {
         display: flex;
-        gap: 20px;
-        margin: 0;
-        padding: 0;
+        align-items: center; /* Centra los elementos verticalmente */
+        justify-content: flex-end; /* Alinea a la derecha */
+        margin-left: auto; /* Empuja estos elementos hacia la derecha */
     }
 
-    li {
-        display: inline;
+    /* Separar el botón de Iniciar sesión del carrito */
+    .user-container {
+        margin-right: 20px; /* Separa el botón de login del carrito */
     }
 
-    a {
-        text-decoration: none;
-        color: #f1e8b8; /* Dorado suave */
-        font-size: 16px;
+    /* Estilos del logo */
+    .logo-container {
+        flex-shrink: 0; /* Evita que el logo se reduzca */
+    }
+
+    .logo {
+        height: 50px; /* Ajusta la altura del logo */
+        width: auto;
+    }
+
+    /* Estilos de la barra de búsqueda */
+    .search-container {
+        display: flex;
+        align-items: center; /* Alinea verticalmente el contenido */
+        gap: 10px; /* Espaciado entre los elementos */
+        flex-grow: 1; /* Ocupa el espacio disponible */
+        justify-content: center; /* Centra la barra de búsqueda */
+    }
+
+    .search-form {
+        display: flex;
+        justify-content: center; /* Centra el formulario dentro de su contenedor */
+        align-items: center; /* Centra el contenido del formulario verticalmente */
+        width: 100%; /* Hace que el formulario ocupe todo el ancho disponible */
+        max-width: 600px; /* Establece un ancho máximo para el formulario */
+    }
+
+    .search-form input[type="text"] {
+        background-color: #ffffff;
+        color: #000000;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 0.9rem;
+        width: 100%; /* Ocupa todo el espacio disponible dentro del formulario */
+        max-width: 400px; /* Limita el ancho máximo del input */
+        border: none; /* Elimina el borde negro */
+    }
+
+    .search-form button {
+        background-color: #8e24aa;
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 5px;
+        margin-left: 10px;
+        border: none; /* Elimina el borde negro */
+        box-shadow: 0 4px 8px rgba(142, 36, 170, 0.5);
+        transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s;
+    }
+
+    .search-form button:hover {
+        background-color: #7b1fa2;
+        transform: scale(1.05);
+        box-shadow: 0 6px 10px rgba(123, 31, 162, 0.6);
+    }
+
+    .search-form button:active {
+        background-color: #6a1b9a;
+        transform: scale(0.95);
+        box-shadow: 0 2px 4px rgba(123, 31, 162, 0.5);
+    }
+
+    /* Estilos de usuario y carrito */
+    .welcome-text {
+        color: #fff;
+        font-size: 1rem;
         font-weight: bold;
-        transition: color 0.3s ease;
+        margin-right: 10px;
     }
 
-    a:hover {
-        color: #c3b267; /* Dorado más vibrante al pasar el ratón */
+    .logout-button,
+    .login-button {
+        background-color: #9c27b0;
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 5px;
+        border: none; /* Remueve el borde negro */
+        text-decoration: none;
+        font-size: 0.9rem;
     }
 
-    button {
-        border: none;
-        cursor: pointer;
+    .logout-button:hover,
+    .login-button:hover {
+        background-color: #7b1fa2;
+        transform: scale(1.05);
+    }
+
+    .logout-button:active,
+    .login-button:active {
+        background-color: #7b1fa2;
+        transform: scale(0.95);
+    }
+
+    .cart-container {
+        text-align: right;
+        flex-shrink: 0;
+    }
+
+    .cart-button {
+        color: #fff;
+        text-decoration: none;
+        padding: 8px 16px;
+        display: inline-flex;
+        align-items: center;
+        transition: background-color 0.3s;
+    }
+
+    .cart-button:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 5px;
+    }
+
+    .cart-total {
+        font-size: 0.9rem;
+        color: #fff;
+        margin-left: 5px;
     }
 </style>

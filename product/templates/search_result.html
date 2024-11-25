@@ -323,36 +323,6 @@
 </style>
 
 <main>
-    <!-- Bloque para mostrar mensajes -->
-    {% if messages %}
-        <div id="message-container" class="mb-4">
-            {% for message in messages %}
-                <div 
-                    class="p-4 mb-4 rounded shadow-md {{ message.tags }} message-alert">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        </div>
-
-        <!-- Script para ocultar el mensaje automáticamente -->
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const messageContainer = document.getElementById('message-container');
-                if (messageContainer) {
-                    // Desaparece después de 5 segundos
-                    setTimeout(() => {
-                        messageContainer.style.transition = "opacity 1s ease-out";
-                        messageContainer.style.opacity = "0";
-                        setTimeout(() => {
-                            messageContainer.remove();
-                        }, 1000); // Espera a que termine la animación
-                    }, 5000); // Mantiene el mensaje visible durante 5 segundos
-                }
-            });
-        </script>
-    {% endif %}
-
-    <!-- Contenido principal -->
     <h1>Bienvenido a MystiKart</h1>
     <p>Explora nuestros productos y disfruta de una experiencia de compra fácil y segura.</p>
 
@@ -387,51 +357,34 @@
             </div>
         </div>
 
-        <!-- Productos -->
-        <div class="card-wrapper">
-            <div class="products-section">
-                <div class="row">
-                    {% if category_filter %}
-                        <h2 class="category-title">{{ category_filter }}</h2>
-                    {% endif %}
-            
-                    {% if no_products %}
-                        <p>No hay productos disponibles en esta categoría.</p>
-                    {% else %}
-                        <div class="grid-products">
-                            {% for product in products %}
-                                <div class="card">
-                                    <a href="{% url 'product:product_info' pk=product.id %}">
-                                        <div class="card-img-wrapper">
-                                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                                        </div>
-                                    </a>
-                                    <div class="card-body">
-                                        <h3 class="product-name text-xl">{{ product.name }}</h3>
-                                        <p class="product-price text-xl">{{ product.price }} €</p>
-                                        <div class="stock badge {% if product.is_in_stock %}bg-success{% else %}bg-danger{% endif %}">
-                                            {% if product.is_in_stock %}
-                                                Quedan: {{ product.stock }}
-                                            {% else %}
-                                                Sin productos
-                                            {% endif %}
-                                        </div>
-                                  
-                                        <!-- Formulario para añadir al carrito -->
-                                        <form action="{% url 'shoppingCart:add_to_cart' product.id %}" method="POST">
-                                            {% csrf_token %}
-                                            <input type="number" name="quantity" min="1" max="{{ product.stock }}" value="1" class="quantity-input">
-                                            <button type="submit" class="add-to-cart-btn">
-                                                Añadir al carrito
-                                            </button>
-                                        </form>                                                                              
-                                    </div>
+        <!-- Filtro de Productos -->
+        <div class="card-wrapper products-section">
+            <div class="grid-products">
+                {% if no_products %}
+                    <p>No se encontraron productos.</p>
+                {% else %}
+                    {% for product in products %}
+                        <div class="card">
+                            <a href="{% url 'product:product_info' pk=product.id %}">
+                                <div class="card-img-wrapper">
+                                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
                                 </div>
-                            {% endfor %}
+                            </a>
+                            <div class="card-body">
+                                <h3>{{ product.name }}</h3>
+                                <p>${{ product.price|floatformat:2 }}</p>
+                                <div class="stock badge {% if product.is_in_stock %}bg-success{% else %}bg-danger{% endif %}">
+                                    {% if product.is_in_stock %}
+                                        Quedan: {{ product.stock }}
+                                    {% else %}
+                                        Sin stock
+                                    {% endif %}
+                                </div>
+                            </div>
                         </div>
-                    {% endif %}
-                </div>
-            </div>            
+                    {% endfor %}
+                {% endif %}
+            </div>
         </div>
 
         <!-- Carrito de Compras -->

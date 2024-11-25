@@ -1,9 +1,66 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class="order-confirmation-container">
+    <h2 class="order-confirmation-title">Pedido Confirmado</h2>
+    <p class="order-confirmation-message">Gracias por tu compra. Tu pedido ha sido procesado.</p>
+    <a href="{% url 'home' %}" class="button home-button">Volver al Inicio</a>
+</div>
 
-<h2>Pedido Confirmado</h2>
-<p>Gracias por tu compra. Tu pedido ha sido procesado.</p>
-<a href="/">Volver al Inicio</a>
+<style>
+/* Fondo oscuro para toda la página */
+html, body {
+    background-color: #1e1e2f; /* Fondo oscuro */
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Georgia', serif;
+}
 
+/* Contenedor principal */
+.order-confirmation-container {
+    padding: 20px;
+    background-color: #ffffff; /* Fondo blanco */
+    border-radius: 8px;
+    max-width: 600px;
+    margin: 50px auto;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Título */
+.order-confirmation-title {
+    color: #5e239d; /* Morado oscuro */
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+}
+
+/* Mensaje de confirmación */
+.order-confirmation-message {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+/* Botón */
+.button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 1rem;
+    text-decoration: none;
+    cursor: pointer;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+}
+
+.home-button {
+    background-color: #3498db; /* Azul para el botón */
+}
+
+.home-button:hover {
+    background-color: #2980b9;
+}
+</style>
 {% endblock %}

@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
+
+from order.models import Order
 from .forms import RegistrationForm, MyAuthForm
 from django.contrib.auth.views import LoginView
 from custom_user.models import User
@@ -98,3 +100,9 @@ def enviar_correo(request, mensaje, email, descripcion, estado):
     from_email = 'phonedoctorpgpi@gmail.com' 
     to_email = [email] 
     send_mail(subject, plain_message, from_email, to_email, html_message=message)
+
+class StoreInfoView(View):
+    template_name = 'store_info.html'     
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name)
+
