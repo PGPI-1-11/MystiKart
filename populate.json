@@ -1,24 +1,41 @@
 [
     {
         "model": "custom_user.User",
+        "pk": 1,
         "fields": {
             "email": "admin@admin.com",
-            "password": "pbkdf2_sha256$600000$ShBdsfn43U1wJUSNmJAvHO$sKdNbXaEA5QJKYFa7giD/jFUUzrX0kmdymemEWmWFlg=",
+            "password": "adm1n",
             "is_superuser": true,
             "is_staff": true
         }
     },
     {
         "model": "custom_user.User",
+        "pk": 2,
         "fields": {
             "email": "user@user.com",
-            "password": "pbkdf2_sha256$600000$ShBdsfn43U1wJUSNmJAvHO$sKdNbXaEA5QJKYFa7giD/jFUUzrX0kmdymemEWmWFlg=",
+            "password": "us3r",
             "is_superuser": false,
             "is_staff": false
         }
     },
     {
+        "model": "product.Brand",
+        "pk": 1,
+        "fields": {
+            "name": "Trendz Bisutería"
+        }
+    },
+    {
+        "model": "product.Brand",
+        "pk": 2,
+        "fields": {
+            "name": "AW Artisan"
+        }
+    },
+    {
         "model": "product.Category",
+        "pk": 1,
         "fields": {
             "name": "Cristales y Minerales",
             "parent_category": null
@@ -26,6 +43,7 @@
     },
     {
         "model": "product.Category",
+        "pk": 2,
         "fields": {
             "name": "Velas y Sahumerios",
             "parent_category": null
@@ -33,18 +51,21 @@
     },
     {
         "model": "product.Product",
+        "pk": 1,
         "fields": {
             "name": "Cuarzo Rosa",
             "description": "Piedra de amor y paz, ideal para atraer la tranquilidad.",
-            "price": 25.00,
+            "price": "25.00",
             "stock": 20,
             "is_available": true,
             "category": 1,
+            "brand": 2,
             "image": "media/item_images/cuarzo_rosa.jpg"
         }
     },
     {
         "model": "product.Product",
+        "pk": 2,
         "fields": {
             "name": "Vela de Canela",
             "description": "Vela aromática de canela para atraer la abundancia.",
@@ -52,7 +73,65 @@
             "stock": 50,
             "is_available": true,
             "category": 2,
+            "brand": 2,
             "image": "media/item_images/vela_canela.jpg"
+        }
+    },
+    
+    {
+        "model": "product.Product",
+        "pk": 3,
+        "fields": {
+            "brand": 2,
+            "category": 2,
+            "name": "Vela de Vainilla",
+            "description": "Vela aromática de vainilla para un ambiente acogedor.",
+            "price": 12.00,
+            "stock": 0,
+            "is_available": true,
+            "image": "media/item_images/vela_vainilla.jpg"
+        }
+    },
+    {
+        "model": "product.Product",
+        "pk": 4,
+        "fields": {
+            "brand": 2,
+            "category": 2,
+            "name": "Vela de Jazmín",
+            "description": "Vela aromática de jazmín para un ambiente romántico.",
+            "price": 14.00,
+            "stock": 35,
+            "is_available": true,
+            "image": "media/item_images/vela_jazmin.jpg"
+        }
+    },
+    {
+        "model": "product.Product",
+        "pk": 5,
+        "fields": {
+            "name": "Incienso de Canela",
+            "description": "Incienso aromático de canela para atraer la abundancia.",
+            "price": 10.00,
+            "stock": 100,
+            "is_available": true,
+            "category": 2,
+            "brand": 1,
+            "image": "media/item_images/incienso_canela.jpg"
+        }
+    },
+    {
+        "model": "product.Product",
+        "pk": 6,
+        "fields": {
+            "name": "Incienso de Lavanda",
+            "description": "Incienso aromático de lavanda para relajar y calmar.",
+            "price": 12.00,
+            "stock": 80,
+            "is_available": true,
+            "category": 2,
+            "brand": 1,
+            "image": "media/item_images/incienso_lavanda.jpg"
         }
     }
 ]

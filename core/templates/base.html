@@ -7,37 +7,7 @@
     <title>{% block title %}MystiKart{% endblock %}</title>
 
     {% load static %}
-    <link rel="stylesheet" href="{% static '/style.css' %}">
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Georgia', serif;
-            background-color: #1e1e2f; /* Fondo oscuro */
-            color: #e0e0f0; /* Texto claro */
-        }
-
-        main {
-            padding: 20px;
-            min-height: calc(100vh - 60px); /* Ajusta el contenido al espacio restante */
-        }
-
-        .registro {
-            text-align: center;
-            color: #ffffff;
-            background-color: #5e239d;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            font-size: 14px;
-            font-weight: bold;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
-        }
-
-        .registro:hover {
-            background-color: #7449c4;
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 <body>
     <header>
@@ -57,3 +27,4 @@
     {% include 'footer.html' %}
 </body>
 </html>
+

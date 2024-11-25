@@ -1,22 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
 <h2>Detalle del Carrito</h2>
-<ul>
-    {% for item in cart_items %}
-        <li>{{ item.product.name }} - Cantidad: {{ item.quantity }} - Precio: {{ item.product.price }}</li>
-    {% endfor %}
-</ul>
-<p>Total: {{ total }}</p>
 
-<h3>Ingresa tu dirección de envío</h3>
-<form method="post" novalidate>
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Confirmar dirección de envío</button>
-</form>
-
+<!-- Bloque para mostrar mensajes -->
 {% if messages %}
     {% for message in messages %}
         <div class="alert alert-success">
@@ -25,7 +12,41 @@
     {% endfor %}
 {% endif %}
 
+{% for cart_item in cart_items %}
+    <div class="cart-item">
+        <p>{{ cart_item.quantity }} x {{ cart_item.product.name }}</p>
+        <p>{{ cart_item.quantity }} x {{ cart_item.product.price }} €</p>
 
-<a href="{% url 'checkout_view' %}">Proceder al Pago</a>
+      
+
+        <!-- Botón para eliminar -->
+        <form class="remove-from-cart-form" method="post" action="{% url 'shoppingCart:remove_from_cart' cart_item.product.id %}">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{% url 'shoppingCart:cart_detail' %}">
+            <input type="hidden" name="quantity" value="1"> <!-- Cantidad a reducir -->
+            <button type="submit" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition">
+                Quitar 1
+            </button>
+        </form>
+    </div>
+{% endfor %}
+
+<!-- Mostrar el contexto global de depuración -->
+
+
+<div class="total">
+    <p>Total: {{ total }} €</p>
+</div>
+
+<p class="shipping-message">El envío se calcula en la pasarela de pagos.<br> Envío gratuito a partir de 100€</p>
+
+<h3>Ingresa tu dirección de envío</h3>
+<form method="post" novalidate>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Confirmar dirección de envío</button>
+</form>
+
+<a href="{% url 'shoppingCart:checkout_view' %}">Proceder al Pago</a>
 
 {% endblock %}

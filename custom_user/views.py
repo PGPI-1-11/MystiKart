@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
+
+from order.models import Order
 from .forms import RegistrationForm, MyAuthForm
 from django.contrib.auth.views import LoginView
 from custom_user.models import User
