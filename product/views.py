@@ -51,3 +51,25 @@ def product_info(request, pk):
         'mensaje': mensaje,
         'mensaje_cantidad': mensaje_cantidad,
     })
+def search_product(request) :
+    query = request.GET.get('q', '')
+    categoria_id = request.GET.get('category', None)
+
+    productos = Product.objects.all() #Iniciamos todos los productos
+
+    if query :
+        productos = productos.filter(name__icontains=query)
+    
+    if categoria_id :
+        productos = productos.filter(category_id=categoria_id)
+
+    categorias = Category.objects.all()
+
+    context = {
+        'products' : productos, 
+        'query' : query,
+        'categoria_id' : categoria_id,
+        'categories' : categorias,
+    }
+
+    return render(request, 'search_result.html', context)
