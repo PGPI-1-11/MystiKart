@@ -330,7 +330,7 @@
         <!-- Filtro de Categorías -->
         <div class="card-wrapper">
             <div class="category-filter">
-                <h2>Filtrar por Categoría</h2>
+                <h2>Categoría</h2>
                 <form method="get" action="{% url 'home' %}">
                     <button type="submit" name="category" value="" {% if not category_filter %}class="active"{% endif %}>Todas</button>
                     {% for category in categories %}
@@ -339,6 +339,21 @@
                         </button>
                     {% endfor %}
                 </form>
+            </div>
+
+            <!-- Filtro de Marcas -->
+            <div class="card-wrapper">
+                <div class="category-filter">
+                    <h2>Marca</h2>
+                    <form method="get" action="{% url 'home' %}">
+                        <button type="submit" name="brand" value="" {% if not brand_filter %}class="active"{% endif %}>Todas</button>
+                        {% for brand in brands %}
+                            <button type="submit" name="brand" value="{{ brand.name }}" {% if brand.name == brand_filter %}class="active"{% endif %}>
+                                {{ brand.name }}
+                            </button>
+                        {% endfor %}
+                    </form>
+                </div>
             </div>
         </div>
 
@@ -371,7 +386,7 @@
                                                 Sin productos
                                             {% endif %}
                                         </div>
-                                    
+                                  
                                         <!-- Formulario para añadir al carrito -->
                                         <form action="{% url 'shoppingCart:add_to_cart' product.id %}" method="POST">
                                             {% csrf_token %}
@@ -418,20 +433,20 @@
                 </div>
                 <p class="shipping-message">El envío se calcula en la pasarela de pagos.<br> Envío gratuito a partir de 100€</p>
             </div>
-        </div>
-
-        <!-- Localizador de Pedidos -->
-        <div class="card-wrapper search-section">
-            <h2 class="text-2xl text-center">Localiza tu pedido</h2>
-            <div class="px-6 py-12 rounded-xl flex items-center justify-center">
-                <form action="search_order" method="get" class="search-form">
-                    <input type="text" name="q" placeholder="Introduce el localizador" class="form-control">
-                    <button type="submit">
-                        <i class="fa fa-search"></i> Buscar
-                    </button>
-                </form>
+        
+            <div class="card-wrapper search-section">
+                <h2 class="text-2xl text-center">Localiza tu pedido</h2>
+                <div class="px-6 py-12 rounded-xl flex items-center justify-center">
+                    <form action="search_order" method="get" class="search-form">
+                        <input type="text" name="q" placeholder="Introduce el localizador" class="form-control">
+                        <button type="submit">
+                            <i class="fa fa-search"></i> Buscar
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </main>
+
 {% endblock %}
