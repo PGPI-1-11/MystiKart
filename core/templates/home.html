@@ -323,6 +323,36 @@
 </style>
 
 <main>
+    <!-- Bloque para mostrar mensajes -->
+    {% if messages %}
+        <div id="message-container" class="mb-4">
+            {% for message in messages %}
+                <div 
+                    class="p-4 mb-4 rounded shadow-md {{ message.tags }} message-alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Script para ocultar el mensaje automáticamente -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const messageContainer = document.getElementById('message-container');
+                if (messageContainer) {
+                    // Desaparece después de 5 segundos
+                    setTimeout(() => {
+                        messageContainer.style.transition = "opacity 1s ease-out";
+                        messageContainer.style.opacity = "0";
+                        setTimeout(() => {
+                            messageContainer.remove();
+                        }, 1000); // Espera a que termine la animación
+                    }, 5000); // Mantiene el mensaje visible durante 5 segundos
+                }
+            });
+        </script>
+    {% endif %}
+
+    <!-- Contenido principal -->
     <h1>Bienvenido a MystiKart</h1>
     <p>Explora nuestros productos y disfruta de una experiencia de compra fácil y segura.</p>
 

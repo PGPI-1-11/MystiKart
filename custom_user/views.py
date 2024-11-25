@@ -10,6 +10,8 @@ from django.http import Http404, HttpResponseBadRequest
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from django.utils.html import strip_tags
+from django.contrib.auth import login
+from django.contrib import messages
 
 
 class RegistrationView(View):
@@ -22,26 +24,38 @@ class RegistrationView(View):
     def post(self, request, *args, **kwargs):
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            # Puedes agregar lógica adicional aquí, como enviar un correo de confirmación.
-            return redirect('login')  # Redirige al usuario a la página de inicio de sesión
+            # Guardar el usuario y los datos adicionales
+            user = form.save(commit=False)
+            user.first_name = form.cleaned_data['first_name']
+            user.last_name = form.cleaned_data['last_name']
+            user.direccion = form.cleaned_data['direccion']
+            user.ciudad = form.cleaned_data['ciudad']
+            user.codigo_postal = form.cleaned_data['codigo_postal']
+            user.pais = form.cleaned_data['pais']
+            user.save()
+
+            # Iniciar sesión automáticamente
+            login(request, user)
+
+            # Añadir un mensaje de éxito
+            messages.success(request, "Registro realizado correctamente. ¡Bienvenido!")
+
+            # Redirige al usuario a la página principal u otra vista deseada
+            return redirect('home')  # Cambia 'home' según tu preferencia
         return render(request, self.template_name, {'form': form})
-    
+
 class MyLoginView(LoginView):
     template_name = 'registration/login.html'
     authentication_form = MyAuthForm
 
     def form_invalid(self, form):
-        # Llama al método padre para obtener el comportamiento predeterminado
         response = super().form_invalid(form)
-        # Agrega mensajes de error al contexto de la plantilla
         error_messages = form.errors['__all__'] if '__all__' in form.errors else None
         self.request.session['error_messages'] = error_messages
         return response
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Recupera mensajes de error del contexto de la sesión
         context['error_messages'] = self.request.session.pop('error_messages', None)
         return context   
 
@@ -85,12 +99,10 @@ def enviar_correo(request, mensaje, email, descripcion, estado):
     plain_message = strip_tags(message)
     from_email = 'phonedoctorpgpi@gmail.com' 
     to_email = [email] 
-
     send_mail(subject, plain_message, from_email, to_email, html_message=message)
 
 class StoreInfoView(View):
-    template_name = 'store_info.html'  
-    
+    template_name = 'store_info.html'     
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name)
 
