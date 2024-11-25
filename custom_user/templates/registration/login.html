@@ -3,25 +3,114 @@
 {% load widget_tweaks %}
 
 {% block content %}
-    <div class="max-w-md mx-auto mt-10 bg-white p-8 border border-gray-300 rounded shadow-md">
-        <h2 class="text-2xl font-bold mb-4">Iniciar sesión</h2>
-        {% if error_messages %}
-            <div class="mb-4 text-red-500">
-                {{ error_messages }}
-            </div>
-        {% endif %}
-        <form method="post" action="{% url 'login' %}">
-            {% csrf_token %}
-            <div class="mb-4">
-                <p>Correo electrónico:</p>
-                {% render_field form.username class="w-full bg-gray-100 border-2 border-blue-500 p-2 rounded" %}
-            </div>
-            <div class="mb-4">
-                <p>Contraseña:</p>
-                {% render_field form.password class="w-full bg-gray-100 border-2 border-blue-500 p-2 rounded" %}
-            </div>
-            <button type="submit" class="bg-blue-500 px-4 py-2 rounded text-white font-bold hover:bg-blue-600 transition">Iniciar sesión</button>
-        </form>
-        <p class="mt-4">¿No tienes una cuenta? <a href="{% url 'registro' %}" class="text-blue-500">Regístrate aquí</a>.</p>
-    </div>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Georgia', serif;
+            background-color: #1e1e2f; /* Fondo oscuro */
+        }
+
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .login-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .login-container h2 {
+            font-size: 2rem;
+            color: #5e239d;
+            margin-bottom: 20px;
+        }
+
+        .input-field {
+            background-color: #f8f8f8;
+            border: 2px solid #5e239d;
+            padding: 12px 15px;
+            border-radius: 8px;
+            width: 100%;
+            margin-bottom: 15px;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .input-field:focus {
+            border-color: #5e239d;
+            outline: none;
+        }
+
+        .login-btn {
+            background-color: #5e239d;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background-color: #4c1d8c;
+        }
+
+        .signup-link {
+            color: #5e239d;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .signup-link:hover {
+            text-decoration: underline;
+        }
+
+        .error-messages {
+            background-color: #fcebea;
+            color: #b71c1c;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+    </style>
+
+    <main>
+        <div class="login-container">
+            <h2>Iniciar sesión</h2>
+
+            {% if error_messages %}
+                <div class="error-messages">
+                    {{ error_messages }}
+                </div>
+            {% endif %}
+
+            <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                <div>
+                    <p>Correo electrónico:</p>
+                    {% render_field form.username class="input-field" %}
+                </div>
+                <div>
+                    <p>Contraseña:</p>
+                    {% render_field form.password class="input-field" %}
+                </div>
+                <button type="submit" class="login-btn">Iniciar sesión</button>
+            </form>
+            <p class="mt-4">¿No tienes una cuenta? <a href="{% url 'registro' %}" class="signup-link">Regístrate aquí</a>.</p>
+        </div>
+    </main>
 {% endblock %}

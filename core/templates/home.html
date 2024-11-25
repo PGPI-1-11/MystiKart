@@ -264,6 +264,62 @@
     .search-section button:hover {
         background-color: #3f1c7c;
     }
+
+    .card-body button {
+        background: linear-gradient(135deg, #6e1b9c, #b462d1); /* Degradado místico */
+        color: #fff;
+        padding: 6px 12px; /* Tamaño más compacto */
+        border: 2px solid #5a1b80; /* Borde púrpura oscuro */
+        border-radius: 6px; /* Bordes más pequeños */
+        font-size: 0.6rem; /* Fuente más pequeña */
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        box-shadow: 0 2px 4px rgba(90, 27, 128, 0.4); /* Sombra suave */
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Sombra en el texto */
+    }
+
+    .card-body button:hover {
+        background: linear-gradient(135deg, #b462d1, #f3d1f8); /* Cambia a un degradado más claro */
+        transform: scale(1.03); /* Efecto hover más sutil */
+        box-shadow: 0 3px 6px rgba(90, 27, 128, 0.6); /* Sombra más intensa */
+    }
+
+    .card-body button:active {
+        background: #5a1b80; /* Color sólido púrpura oscuro al hacer clic */
+        transform: scale(0.95); /* Se encoge un poco */
+        box-shadow: 0 1px 3px rgba(90, 27, 128, 0.5); /* Sombra más tenue */
+    }
+    .remove-from-cart-btn {
+        background: linear-gradient(135deg, #6e1b9c, #b462d1); /* Degradado de morados profundos */
+        color: #fff;
+        padding: 6px 12px;
+        border: 2px solid #5a1b80; /* Borde morado oscuro */
+        border-radius: 6px;
+        font-size: 0.75rem; /* Tamaño de fuente ligeramente más pequeño */
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        box-shadow: 0 2px 4px rgba(90, 27, 128, 0.4); /* Sombra sutil en tono morado */
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Sombra suave en el texto */
+    }
+
+    .remove-from-cart-btn:hover {
+        background: linear-gradient(135deg, #b462d1, #6e1b9c); /* Cambio de colores en el hover */
+        transform: scale(1.03); /* Efecto sutil de expansión al pasar el mouse */
+        box-shadow: 0 3px 6px rgba(90, 27, 128, 0.6); /* Sombra más intensa al hover */
+    }
+
+    .remove-from-cart-btn:active {
+        background: #5a1b80; /* Color sólido púrpura oscuro al hacer clic */
+        transform: scale(0.95); /* Se encoje al hacer clic */
+        box-shadow: 0 1px 3px rgba(90, 27, 128, 0.5); /* Sombra más tenue al hacer clic */
+    }
+
+
+
+
+
 </style>
 
 <main>
@@ -335,7 +391,7 @@
                                         <form action="{% url 'shoppingCart:add_to_cart' product.id %}" method="POST">
                                             {% csrf_token %}
                                             <input type="number" name="quantity" min="1" max="{{ product.stock }}" value="1" class="quantity-input">
-                                            <button type="submit" class="bg-blue-500 text-white py-1 px-4 rounded">
+                                            <button type="submit" class="add-to-cart-btn">
                                                 Añadir al carrito
                                             </button>
                                         </form>                                                                              
@@ -362,7 +418,7 @@
                                 <form method="post" action="{% url 'shoppingCart:remove_from_cart' cart_item.product.id %}">
                                     {% csrf_token %}
                                     <input type="hidden" name="next" value="{% url 'home' %}">
-                                    <button type="submit" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition">
+                                    <button type="submit" class="remove-from-cart-btn">
                                         Quitar 1
                                     </button>
                                 </form>
