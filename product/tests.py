@@ -1,7 +1,9 @@
 
-from django.test import Client
-from django.urls import reverse
-from product.models import Category, Product
+from django.test import Client,TestCase
+from django.urls import reverse 
+from django.contrib.auth import get_user_model
+from product.models import Product, Category, Brand
+
 
 
 class SearchProductViewTest(TestCase):
@@ -79,11 +81,6 @@ class SearchProductViewTest(TestCase):
             Category.objects.all().order_by('id'),
             transform=lambda x: x
         )
-=======
-from django.test import TestCase, Client
-from django.urls import reverse
-from django.contrib.auth import get_user_model
-from product.models import Product, Category, Brand
 
 class ProductViewTest(TestCase):
     def setUp(self):
