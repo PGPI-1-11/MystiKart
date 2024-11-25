@@ -87,3 +87,10 @@ def enviar_correo(request, mensaje, email, descripcion, estado):
     to_email = [email] 
 
     send_mail(subject, plain_message, from_email, to_email, html_message=message)
+
+class StoreInfoView(View):
+    template_name = 'store_info.html'  
+    
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name)
+
