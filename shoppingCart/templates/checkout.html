@@ -1,15 +1,115 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Revisión del Pedido</h2>
-<ul>
-    {% for item in cart_items %}
-        <li>{{ item.product.name }} - Cantidad: {{ item.quantity }} - Precio: {{ item.product.price }}</li>
-    {% endfor %}
-</ul>
-<p>Total: {{ total }}</p>
-<form method="post">
-    {% csrf_token %}
-    <button type="submit">Confirmar Pedido</button>
-</form>
+<div class="order-review-container">
+    <h2 class="order-review-title">Revisión del Pedido</h2>
+
+    <ul class="order-items">
+        {% for item in cart_items %}
+            <li class="order-item">
+                <span class="product-name">{{ item.product.name }}</span>
+                <span class="product-quantity">Cantidad: {{ item.quantity }}</span>
+                <span class="product-price">Precio: {{ item.product.price }} €</span>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <p class="order-total">Total: <span class="total-amount">{{ total }} €</span></p>
+
+    <form method="post" class="confirm-order-form">
+        {% csrf_token %}
+        <button type="submit" class="button confirm-button">Confirmar Pedido</button>
+    </form>
+</div>
+
+<style>
+/* Contenedor principal */
+.order-review-container {
+    padding: 20px;
+    background-color: #f8f8f8; /* Fondo claro */
+    border-radius: 8px;
+    max-width: 800px;
+    margin: 20px auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Título */
+.order-review-title {
+    color: #5e239d; /* Morado oscuro */
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+/* Lista de artículos */
+.order-items {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+}
+
+.order-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #fff; /* Fondo blanco para cada item */
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.product-name {
+    font-size: 1rem;
+    color: #333;
+    flex: 1;
+}
+
+.product-quantity, .product-price {
+    font-size: 0.9rem;
+    color: #666;
+    margin-left: 10px;
+}
+
+/* Total */
+.order-total {
+    text-align: right;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.total-amount {
+    color: #5e239d; /* Morado oscuro */
+}
+
+/* Botón */
+.button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 0.9rem;
+    text-decoration: none;
+    cursor: pointer;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+}
+
+.confirm-button {
+    background-color: #3498db; /* Azul para confirmar */
+    display: block;
+    margin: 20px auto 0;
+    text-align: center;
+}
+
+.confirm-button:hover {
+    background-color: #2980b9;
+}
+
+/* Formulario */
+.confirm-order-form {
+    text-align: center;
+}
+</style>
 {% endblock %}

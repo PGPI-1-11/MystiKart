@@ -1,52 +1,174 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Detalle del Carrito</h2>
+<div class="cart-detail-container">
+    <h2 class="cart-title">Detalle del Carrito</h2>
 
-<!-- Bloque para mostrar mensajes -->
-{% if messages %}
-    {% for message in messages %}
-        <div class="alert alert-success">
-            {{ message }}
+    <!-- Bloque para mostrar mensajes -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% for cart_item in cart_items %}
+        <div class="cart-item">
+            <div class="cart-item-details">
+                <p class="cart-item-name">{{ cart_item.quantity }} x {{ cart_item.product.name }}</p>
+                <p class="cart-item-price">{{ cart_item.quantity }} x {{ cart_item.product.price }} €</p>
+            </div>
+
+            <!-- Botón para eliminar -->
+            <form class="remove-from-cart-form" method="post" action="{% url 'shoppingCart:remove_from_cart' cart_item.product.id %}">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{% url 'shoppingCart:cart_detail' %}">
+                <input type="hidden" name="quantity" value="1"> <!-- Cantidad a reducir -->
+                <button type="submit" class="button remove-button">
+                    Quitar 1
+                </button>
+            </form>
         </div>
     {% endfor %}
-{% endif %}
 
-{% for cart_item in cart_items %}
-    <div class="cart-item">
-        <p>{{ cart_item.quantity }} x {{ cart_item.product.name }}</p>
-        <p>{{ cart_item.quantity }} x {{ cart_item.product.price }} €</p>
-
-      
-
-        <!-- Botón para eliminar -->
-        <form class="remove-from-cart-form" method="post" action="{% url 'shoppingCart:remove_from_cart' cart_item.product.id %}">
-            {% csrf_token %}
-            <input type="hidden" name="next" value="{% url 'shoppingCart:cart_detail' %}">
-            <input type="hidden" name="quantity" value="1"> <!-- Cantidad a reducir -->
-            <button type="submit" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition">
-                Quitar 1
-            </button>
-        </form>
+    <div class="total">
+        <p class="total-text">Total: <span class="total-amount">{{ total }} €</span></p>
     </div>
-{% endfor %}
 
-<!-- Mostrar el contexto global de depuración -->
+    <p class="shipping-message">
+        El envío se calcula en la pasarela de pagos.<br>
+        <span class="free-shipping">Envío gratuito a partir de 100€</span>
+    </p>
 
+    <h3 class="shipping-title">Ingresa tu dirección de envío</h3>
+    <form method="post" novalidate class="shipping-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="button confirm-button">Confirmar dirección de envío</button>
+    </form>
 
-<div class="total">
-    <p>Total: {{ total }} €</p>
+    <a href="{% url 'shoppingCart:checkout_view' %}" class="button checkout-button">Proceder al Pago</a>
 </div>
 
-<p class="shipping-message">El envío se calcula en la pasarela de pagos.<br> Envío gratuito a partir de 100€</p>
+<style>
+/* Contenedor principal */
+.cart-detail-container {
+    padding: 20px;
+    background-color: #f8f8f8; /* Fondo claro */
+    border-radius: 8px;
+    max-width: 800px;
+    margin: 20px auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
 
-<h3>Ingresa tu dirección de envío</h3>
-<form method="post" novalidate>
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Confirmar dirección de envío</button>
-</form>
+/* Títulos */
+.cart-title, .shipping-title {
+    color: #5e239d; /* Morado oscuro */
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
 
-<a href="{% url 'shoppingCart:checkout_view' %}">Proceder al Pago</a>
+/* Cart Items */
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 15px;
+    background-color: #fff; /* Fondo blanco para cada item */
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
 
+.cart-item-details {
+    max-width: 70%;
+}
+
+.cart-item-name {
+    font-size: 1rem;
+    color: #333;
+}
+
+.cart-item-price {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Total */
+.total {
+    text-align: right;
+    margin-top: 20px;
+}
+
+.total-text {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.total-amount {
+    color: #5e239d;
+}
+
+/* Shipping Message */
+.shipping-message {
+    text-align: center;
+    color: #666;
+    font-size: 0.9rem;
+    margin: 20px 0;
+}
+
+.free-shipping {
+    font-weight: bold;
+    color: #5e239d;
+}
+
+/* Botones */
+.button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 0.9rem;
+    text-decoration: none;
+    cursor: pointer;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+}
+
+.remove-button {
+    background-color: #ff5a5a; /* Rojo para quitar */
+}
+
+.remove-button:hover {
+    background-color: #e74c3c;
+}
+
+.confirm-button {
+    background-color: #3498db; /* Azul para confirmar */
+}
+
+.confirm-button:hover {
+    background-color: #2980b9;
+}
+
+.checkout-button {
+    background-color: #5e239d; /* Morado oscuro */
+    text-align: center;
+    margin-top: 20px;
+    display: block;
+}
+
+.checkout-button:hover {
+    background-color: #452070;
+}
+
+/* Formulario */
+.shipping-form {
+    margin: 20px 0;
+    text-align: center;
+}
+</style>
 {% endblock %}

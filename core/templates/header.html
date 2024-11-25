@@ -1,28 +1,33 @@
 {% load static %}
 <header>
     <nav>
-        <ul class="flex justify-center space-x-8">
-            <li>
+        <ul class="nav-container">
+            <!-- Logo -->
+            <li class="nav-item logo-container">
                 <a href="{% url 'home' %}">
                     <img src="{% static 'images/logo.jpeg' %}" alt="Logo" class="logo">
                 </a>
             </li>
-            {% if user.is_authenticated %}
-                <li class="text-white">Bienvenido, {{ user.email }}</li>
-                <form action="{% url 'logout' %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">
-                        Cerrar sesión
-                    </button>
-                </form>
-            {% else %}
-                <li>
-                    <a href="{% url 'login' %}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
+
+            <!-- Usuario autenticado o Login -->
+            <li class="nav-item user-container">
+                {% if user.is_authenticated %}
+                    <span class="welcome-text">Bienvenido, {{ user.email }}</span>
+                    <form action="{% url 'logout' %}" method="post" class="logout-form">
+                        {% csrf_token %}
+                        <button type="submit" class="logout-button">
+                            Cerrar sesión
+                        </button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="login-button">
                         Iniciar sesión
                     </a>
-                </li>
-            {% endif %}
-            <li style="float: right;">
+                {% endif %}
+            </li>
+
+            <!-- Carrito -->
+            <li class="nav-item cart-container">
                 <a href="{% url 'shoppingCart:cart_detail' %}" class="cart-button">
                     <i class="fa fa-shopping-cart"></i>
                     <span class="cart-total">Total: 0 €</span>
@@ -33,23 +38,124 @@
 </header>
 
 <style>
+    /* General Header Styling */
     header {
         background-color: #5e239d; /* Morado oscuro */
         padding: 10px 20px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        width: 100%; /* Asegura que el header ocupe todo el ancho */
     }
+
+    /* Navigation Container */
+    .nav-container {
+        display: flex;
+        justify-content: space-between; /* Espacio entre los elementos */
+        align-items: center; /* Centra verticalmente */
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        width: 100%; /* Hace que el contenedor ocupe todo el ancho */
+    }
+
+    /* Logo Container */
+    .logo-container {
+        flex-shrink: 0; /* Evita que el logo se reduzca */
+    }
+
     .logo {
-        height: 40px; /* Ajusta la altura según sea necesario */
+        height: 60px; /* Ajusta la altura del logo */
         width: auto;
-        vertical-align: middle; /* Alinea verticalmente el logo con el texto */
     }
+
+    /* User Authentication Section */
+    .user-container {
+        text-align: center;
+        flex-grow: 1; /* Permite que este elemento ocupe el espacio restante */
+        display: flex;
+        justify-content: center;
+        gap: 10px; /* Espaciado entre elementos */
+    }
+
+    .welcome-text {
+        color: #fff;
+        font-size: 1rem;
+        font-weight: bold;
+        margin-right: 10px;
+    }
+
+    .logout-form {
+        display: inline-block;
+    }
+
+    /* Estilos para el botón de cerrar sesión */
+    .logout-button {
+        background-color: #8e24aa; /* Morado más fuerte */
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s;
+        font-size: 0.9rem;
+        box-shadow: 0 4px 8px rgba(142, 36, 170, 0.5); /* Sombra más destacada */
+    }
+
+    .logout-button:hover {
+        background-color: #7b1fa2; /* Púrpura más oscuro al pasar el cursor */
+        transform: scale(1.05); /* Agrandar el botón */
+        box-shadow: 0 6px 10px rgba(123, 31, 162, 0.6); /* Sombra más intensa */
+    }
+
+    .logout-button:active {
+        background-color: #6a1b9a; /* Más oscuro al hacer clic */
+        transform: scale(0.95); /* Efecto de reducir el tamaño al hacer clic */
+        box-shadow: 0 2px 4px rgba(123, 31, 162, 0.5); /* Sombra más tenue */
+    }
+
+    /* Estilos para el botón de iniciar sesión */
+    .login-button {
+        background-color: #9c27b0; /* Morado claro pero intenso */
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s;
+        box-shadow: 0 4px 8px rgba(156, 39, 176, 0.5); /* Sombra más destacada */
+    }
+
+    .login-button:hover {
+        background-color: #8e24aa; /* Púrpura más fuerte al pasar el cursor */
+        transform: scale(1.05); /* Agrandar el botón */
+        box-shadow: 0 6px 10px rgba(142, 36, 170, 0.6); /* Sombra más intensa */
+    }
+
+    .login-button:active {
+        background-color: #7b1fa2; /* Más oscuro al hacer clic */
+        transform: scale(0.95); /* Efecto de reducir el tamaño al hacer clic */
+        box-shadow: 0 2px 4px rgba(142, 36, 170, 0.5); /* Sombra más tenue */
+    }
+
+    /* Cart Container */
+    .cart-container {
+        text-align: right;
+        flex-shrink: 0; /* Impide que el carrito se reduzca */
+    }
+
     .cart-button {
         color: #fff;
         text-decoration: none;
         padding: 8px 16px;
-        display: inline-block;
+        display: inline-flex;
+        align-items: center; /* Alinea el carrito verticalmente */
         transition: background-color 0.3s;
     }
+
+    .cart-button:hover {
+        background-color: rgba(255, 255, 255, 0.2); /* Efecto hover */
+        border-radius: 5px;
+    }
+
     .cart-total {
         font-size: 0.9rem;
         color: #fff;
