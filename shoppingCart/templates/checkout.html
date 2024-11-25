@@ -14,7 +14,7 @@
         {% endfor %}
     </ul>
 
-    <p class="order-total">Total: <span class="total-amount">{{ total }} €</span></p>
+    <p class="order-total">Total: <span class="total-amount">{{ precio_total }} €</span></p>
 
     <form method="post" class="confirm-order-form">
         {% csrf_token %}

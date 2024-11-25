@@ -54,11 +54,12 @@ def cart_detail(request):
 
     cart = request.session.get('cart', {})
     cart_items = []
-    total = 0
+    precio_total = 0
+
     for product_id, quantity in cart.items():
         product = Product.objects.get(id=product_id)
         subtotal = product.price * quantity
-        total += subtotal
+        precio_total += subtotal
         cart_items.append({
             'product': product,
             'quantity': quantity,
@@ -67,19 +68,19 @@ def cart_detail(request):
 
     return render(request, 'cart_detail.html', {
         'cart_items': cart_items,
-        'total': total,
+        'precio_total': precio_total,
         'form': form,
     })
 
 def checkout_view(request):
     cart = request.session.get('cart', {})
     cart_items = []
-    total = 0
+    precio_total = 0
 
     for product_id, quantity in cart.items():
         product = Product.objects.get(id=product_id)
         subtotal = product.price * quantity
-        total += subtotal
+        precio_total += subtotal
         cart_items.append({
             'product': product,
             'quantity': quantity,
@@ -91,10 +92,11 @@ def checkout_view(request):
         request.session['cart'] = {}  # Vaciar el carrito
         return redirect('shoppingCart:order_confirmation')
 
-    return render(request, 'checkout.html', {'cart_items': cart_items, 'total': total})
+    return render(request, 'checkout.html', {'cart_items': cart_items, 'precio_total': precio_total})
 
 def order_confirmation(request):
-    return render(request, 'confirmation.html')
+    return render(request, 'confirmation.html', {'is_confirmation_page': True})
+
 
 def remove_from_cart(request, product_id):
     if request.method == 'POST':

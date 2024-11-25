@@ -27,12 +27,14 @@
             </li>
 
             <!-- Carrito -->
+            {% if not is_confirmation_page %}
             <li class="nav-item cart-container">
                 <a href="{% url 'shoppingCart:cart_detail' %}" class="cart-button">
                     <i class="fa fa-shopping-cart"></i>
-                    <span class="cart-total">Total: 0 €</span>
+                    <span class="cart-total">Total: {{ precio_total }} €</span>
                 </a>
             </li>
+            {% endif %}
         </ul>
     </nav>
 </header>
