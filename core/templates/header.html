@@ -2,10 +2,17 @@
 <header>
     <nav>
         <ul class="nav-container">
-            <!-- Logo -->
+
+
             <li class="nav-item logo-container">
                 <a href="{% url 'home' %}">
                     <img src="{% static 'images/logo.jpeg' %}" alt="Logo" class="logo">
+                </a>
+            </li>
+
+            <li class="nav-item store-info-container">
+                <a href="{% url 'store_info' %}" class="store-info-button">
+                    ¿Quienes somos?
                 </a>
             </li>
 
