@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from product.models import Product
+from shoppingCart.models import CartItem
 from .forms import ShippingAddressForm 
 from django.contrib import messages
 from django.http import JsonResponse
@@ -52,19 +53,28 @@ def cart_detail(request):
         messages.success(request, 'Dirección confirmada')
         return redirect('shoppingCart:cart_detail')
 
-    cart = request.session.get('cart', {})
     cart_items = []
     precio_total = 0
 
-    for product_id, quantity in cart.items():
-        product = Product.objects.get(id=product_id)
-        subtotal = product.price * quantity
-        precio_total += subtotal
-        cart_items.append({
-            'product': product,
-            'quantity': quantity,
-            'subtotal': subtotal,
-        })
+    if request.user.is_authenticated:
+        # Cargar los CartItem del usuario autenticado
+        user_cart_items = CartItem.objects.filter(user=request.user, is_processed=False)
+        for item in user_cart_items:
+            subtotal = item.product.price * item.quantity
+            precio_total += subtotal
+            cart_items.append(item)
+    else:
+        # Cargar desde la sesión si el usuario no está autenticado
+        cart = request.session.get('cart', {})
+        for product_id, quantity in cart.items():
+            product = Product.objects.get(id=product_id)
+            subtotal = product.price * quantity
+            precio_total += subtotal
+            cart_items.append({
+                'product': product,
+                'quantity': quantity,
+                'subtotal': subtotal,
+            })
 
     return render(request, 'cart_detail.html', {
         'cart_items': cart_items,

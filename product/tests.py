@@ -1,10 +1,8 @@
-
-from django.test import Client,TestCase
-from django.urls import reverse 
+from django.test import Client, TestCase
+from django.urls import reverse
 from django.contrib.auth import get_user_model
 from product.models import Product, Category, Brand
-
-
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 class SearchProductViewTest(TestCase):
     def setUp(self):
@@ -14,13 +12,16 @@ class SearchProductViewTest(TestCase):
         self.brand = Brand.objects.create(name="Brand 1")
         
         self.product1 = Product.objects.create(
-            name="Product One", price=10.0, category=self.category1, brand=self.brand
+            name="Product One", price=10.0, category=self.category1, brand=self.brand,
+            image=SimpleUploadedFile(name='test_image.jpg', content=b'', content_type='image/jpeg')
         )
         self.product2 = Product.objects.create(
-            name="Product Two", price=20.0, category=self.category2, brand=self.brand
+            name="Product Two", price=20.0, category=self.category2, brand=self.brand,
+            image=SimpleUploadedFile(name='test_image.jpg', content=b'', content_type='image/jpeg')
         )
         self.product3 = Product.objects.create(
-            name="Another Product", price=15.0, category=self.category1, brand=self.brand
+            name="Another Product", price=15.0, category=self.category1, brand=self.brand,
+            image=SimpleUploadedFile(name='test_image.jpg', content=b'', content_type='image/jpeg')
         )
         self.url = reverse('product:search_product')
 
@@ -95,13 +96,9 @@ class ProductViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'home.html')
 
-
     def test_product_info(self):
-        product = Product.objects.create(name='Test Product', price=10.0, brand=self.brand, category=self.category)
-        product.image = 'media/item_images/image.jpg'
-        product.save()
-
+        product = Product.objects.create(name='Test Product', price=10.0, brand=self.brand, category=self.category,
+                                         image=SimpleUploadedFile(name='test_image.jpg', content=b'', content_type='image/jpeg'))
         response = self.client.get(reverse('product:product_info', args=[product.id]))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'info.html')
-
