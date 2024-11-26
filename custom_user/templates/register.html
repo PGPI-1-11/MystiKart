@@ -1,110 +1,110 @@
-<!-- templates/register.html -->
-
 {% extends 'base.html' %}
 
 {% load widget_tweaks %}
 
 {% block content %}
-    <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            font-family: 'Georgia', serif;
-            background-color: #1e1e2f; /* Fondo oscuro */
-        }
+<style>
+    html, body {
+        height: 115%;
+        margin: 0;
+        padding: 0;
+        font-family: 'Georgia', serif;
+        background-color: #1e1e2f; 
+    }
 
-        main {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-        }
+    main {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+    }
 
-        .register-container {
-            background-color: #ffffff;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
-            width: 100%;
-            text-align: center;
-        }
+    .register-container {
+        background-color: #ffffff;
+        padding: 20px; 
+        border-radius: 8px; 
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); 
+        max-width: 700px; 
+        width: 100%;
+        text-align: center;
+    }
 
-        .register-container h2 {
-            font-size: 2rem;
-            color: #5e239d;
-            margin-bottom: 20px;
-        }
+    .register-container h2 {
+        font-size: 1.5rem; 
+        color: #5e239d;
+        margin-bottom: 15px;
+    }
 
-        .input-field {
-            background-color: #f8f8f8;
-            border: 2px solid #5e239d;
-            padding: 12px 15px;
-            border-radius: 8px;
-            width: 100%;
-            margin-bottom: 15px;
-            font-size: 1rem;
-            color: #333;
-        }
+    .input-field {
+        background-color: #f8f8f8;
+        border: 1px solid #5e239d; 
+        padding: 8px 10px; 
+        border-radius: 6px; 
+        width: 100%;
+        margin-bottom: 10px;
+        font-size: 0.9rem; 
+        color: #333;
+        box-sizing: border-box;
+    }
 
-        .input-field:focus {
-            border-color: #5e239d;
-            outline: none;
-        }
+    .input-field:focus {
+        border-color: #5e239d;
+        outline: none;
+    }
 
-        .register-btn {
-            background-color: #5e239d;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 8px;
-            width: 100%;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
+    .register-btn {
+        background-color: #5e239d;
+        color: white;
+        padding: 10px 15px; 
+        border: none;
+        border-radius: 6px; 
+        width: 100%;
+        font-size: 1rem; 
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
 
-        .register-btn:hover {
-            background-color: #4c1d8c;
-        }
+    .register-btn:hover {
+        background-color: #4c1d8c;
+    }
 
-        .error-messages {
-            background-color: #fcebea;
-            color: #b71c1c;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            text-align: left;
-        }
-    </style>
+    .error-messages {
+        background-color: #fcebea;
+        color: #b71c1c;
+        padding: 10px; 
+        border-radius: 6px; 
+        margin-bottom: 10px; 
+        text-align: left;
+    }
+</style>
 
-    <main>
-        <div class="register-container">
-            <h2>Registro</h2>
+<main>
+    <div class="register-container">
+        <h2>Registro</h2>
 
-            {% if form.non_field_errors %}
-                <div class="error-messages">
-                    {% for error in form.non_field_errors %}
-                        <p>{{ error }}</p>
+        {% if form.non_field_errors %}
+            <div class="error-messages">
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="post" action="{% url 'registro' %}">
+            {% csrf_token %}
+            {% for field in form %}
+                <div>
+                    {{ field.label_tag }}
+                    {% render_field field class="input-field" %}
+                    {% for error in field.errors %}
+                        <p class="text-red-500 text-sm">{{ error }}</p> 
                     {% endfor %}
                 </div>
-            {% endif %}
+            {% endfor %}
 
-            <form method="post" action="{% url 'registro' %}">
-                {% csrf_token %}
-                {% for field in form %}
-                    <div>
-                        {{ field.label_tag }}
-                        {% render_field field class="input-field" %}
-                        {% for error in field.errors %}
-                            <p class="text-red-500">{{ error }}</p>
-                        {% endfor %}
-                    </div>
-                {% endfor %}
-                <button type="submit" class="register-btn">Registrarse</button>
-            </form>
-        </div>
-    </main>
+            <button type="submit" class="register-btn">Registrarse</button>
+        </form>
+    </div>
+</main>
 {% endblock %}

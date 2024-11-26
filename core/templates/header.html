@@ -31,7 +31,7 @@
             <!-- Right Section: User Options -->
             <div class="user-container">
                 {% if user.is_authenticated %}
-                <p class="welcome-text">Bienvenido, {{ user.email }}
+                <p class="welcome-text">Bienvenido, {{ user.first_name }}
                 <form action="{% url 'logout' %}" method="post" class="logout-form">
                     {% csrf_token %}
                     <button type="submit" class="logout-button">
