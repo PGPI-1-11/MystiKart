@@ -104,9 +104,15 @@ def remove_from_cart(request, product_id):
 
         # Verificar si el producto está en el carrito
         if str(product_id) in cart:
-            cart[str(product_id)] -= 1
-            if cart[str(product_id)] <= 0:
-                del cart[str(product_id)]  # Eliminar el producto si su cantidad es 0
+            # Verificar si se quiere eliminar todo
+            remove_all = request.POST.get('remove_all', False)  # Detecta si es "eliminar todo"
+            
+            if remove_all:
+                del cart[str(product_id)]  # Elimina todo el producto del carrito
+            else:
+                cart[str(product_id)] -= 1  # Reduce 1 unidad
+                if cart[str(product_id)] <= 0:
+                    del cart[str(product_id)]  # Eliminar el producto si su cantidad es 0
 
             # Actualizar el carrito en la sesión
             request.session['cart'] = cart
