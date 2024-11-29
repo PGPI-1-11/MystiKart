@@ -5,6 +5,10 @@ from .forms import ShippingAddressForm
 from django.contrib import messages
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+
 
 
 
@@ -105,7 +109,43 @@ def checkout_view(request):
     return render(request, 'checkout.html', {'cart_items': cart_items, 'precio_total': precio_total})
 
 def order_confirmation(request):
+    # Verifica si el usuario está autenticado para obtener su email
+    if request.user.is_authenticated:
+        user_email = request.user.email
+    else:
+        # Si el usuario no está autenticado, usa el correo que ingresó en el formulario
+        user_email = request.POST.get('email')
+
+    if user_email:
+        # Define el contenido del email
+        subject = 'Confirmación de tu pedido en MystiKart'
+        plain_message = (
+            f"Gracias por tu pedido en MystiKart.\n"
+            "Tu pedido ha sido confirmado exitosamente y está siendo procesado.\n\n"
+            "Para ver el estado de tu pedido, utiliza el siguiente localizador:\n\n"
+            "ESTO ES EL LOCALIZADOR\n\n"
+            "Saludos,\n"
+            "El equipo de MystiKart"
+        )
+        from_email = 'MystiKart <mystikartpgpi@gmail.com>'
+        to_email = [user_email]
+
+        # Envía el email
+        try:
+            send_mail(subject, plain_message, from_email, to_email)
+            if request.user.is_authenticated:
+                messages.success(request, 'Se ha enviado un correo de confirmación a tu dirección registrada.')
+            else:
+                messages.success(request, 'Se ha enviado un correo de confirmación a la dirección proporcionada.')
+        except Exception as e:
+            messages.error(request, f'No se pudo enviar el correo: {e}')
+    else:
+        # Si no se proporciona un correo, muestra un mensaje de error
+        messages.error(request, 'Por favor ingresa un correo electrónico válido.')
+
+    # Renderiza la página de confirmación
     return render(request, 'confirmation.html', {'is_confirmation_page': True})
+
 
 
 def remove_from_cart(request, product_id):

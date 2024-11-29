@@ -16,11 +16,23 @@
 
     <p class="order-total">Total: <span class="total-amount">{{ precio_total }} €</span></p>
 
-    <form method="post" class="confirm-order-form">
+    <form id="payment-form" class="mt-4" method="post" action="{% url 'shoppingCart:order_confirmation' %}">
         {% csrf_token %}
+        {% if user.is_authenticated %}
+            <!-- No mostrar el campo de correo si el usuario está autenticado -->
+            <input type="hidden" name="email" value="{{ user.email }}">
+        {% else %}
+            <!-- Mostrar el campo de correo si el usuario no está autenticado -->
+            <div class="mb-4 flex flex-col justify-between block mt-2 p-4 bg-white rounded-xl">
+                <label for="email" class="block text-sm font-medium text-gray-700">Correo electrónico</label>
+                <input type="email" name="email" id="email" placeholder="Ingresa tu correo electrónico" required class="mt-1 p-2 w-full border rounded-md">
+            </div>
+        {% endif %}
+
         <button type="submit" class="button confirm-button">Confirmar Pedido</button>
     </form>
 </div>
+
 
 <style>
 /* Fondo oscuro para toda la página */
