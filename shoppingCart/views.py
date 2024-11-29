@@ -99,7 +99,7 @@ def cart_detail(request):
             precio_total += subtotal
             cart_items.append(item)
     else:
-        # Cargar desde la sesión si el usuario no está autenticado
+        
         cart = request.session.get('cart', {})
         for product_id, quantity in cart.items():
             product = Product.objects.get(id=product_id)
