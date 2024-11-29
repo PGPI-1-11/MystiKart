@@ -14,35 +14,54 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 
 logger = logging.getLogger(__name__)
 
+
 def add_to_cart(request, product_id):
     if request.method == 'POST':
         # Obtener el producto
         product = get_object_or_404(Product, id=product_id)
-
-        # Obtener el carrito de la sesión
-        cart = request.session.get('cart', {})
-
         # Obtener la cantidad solicitada
         quantity = int(request.POST.get('quantity', 1))
+        precio_total = 0
+        # Comprobar si el usuario está autenticado
+        if request.user.is_authenticated:
+            # Usuario autenticado: manejar en base de datos
+            cart_items = CartItem.objects.filter(user=request.user, is_processed=False).select_related('product')
+            for item in cart_items:
+                 subtotal = item.product.price * item.quantity
+                 precio_total += subtotal
 
-        # Comprobar el stock disponible
-        if cart.get(str(product_id), 0) + quantity > product.stock:
-            messages.error(request, 'No hay suficiente stock disponible.')
-            return redirect('home')
+            # Verificar stock disponible
+            if cart_items.quantity() + quantity > product.stock:
+                messages.error(request, 'No hay suficiente stock disponible.')
+                return redirect('home')
 
-        # Actualizar o agregar el producto al carrito
-        if str(product_id) in cart:
-            cart[str(product_id)] += quantity
+            # Actualizar la cantidad del producto
+            cart_items.quantity += quantity
+            cart_items.save()
         else:
-            cart[str(product_id)] = quantity
+            # Usuario no autenticado: manejar en la sesión
+            cart = request.session.get('cart', {})
 
-        # Guardar el carrito en la sesión
-        request.session['cart'] = cart
+            # Verificar stock disponible
+            if cart.get(str(product_id), 0) + quantity > product.stock:
+                messages.error(request, 'No hay suficiente stock disponible.')
+                return redirect('home')
+
+            # Actualizar o agregar el producto al carrito
+            if str(product_id) in cart:
+                cart[str(product_id)] += quantity
+            else:
+                cart[str(product_id)] = quantity
+
+            # Guardar el carrito en la sesión
+            request.session['cart'] = cart
 
         # Redirigir de vuelta al inicio o donde corresponda
+        messages.success(request, f'{product.name} se ha agregado al carrito.')
         return redirect('home')  # Cambia 'home' por la página adecuada
     else:
         return redirect('home')
+
 
 
 def cart_detail(request):
