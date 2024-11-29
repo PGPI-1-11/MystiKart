@@ -41,6 +41,8 @@ def add_to_cart(request, product_id):
             # Actualizar la cantidad del producto
             cart_item.quantity += quantity
             cart_item.save()
+            product.stock -= quantity
+            product.save()         
         else:
             # Usuario no autenticado: manejar en la sesión
             cart = request.session.get('cart', {})
@@ -58,6 +60,9 @@ def add_to_cart(request, product_id):
 
             # Guardar el carrito en la sesión
             request.session['cart'] = cart
+            product.stock -= quantity
+            product.save()   
+            
            
 
         # Redirigir de vuelta al inicio o donde corresponda
@@ -323,17 +328,41 @@ def order_confirmation(request):
 
 
 def remove_from_cart(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
     if request.method == 'POST':
-        cart = request.session.get('cart', {})
+        if request.user.is_authenticated:
+            # El usuario está autenticado, manejar en la base de datos
+            try:
+                cart_item = CartItem.objects.get(user=request.user, product_id=product_id, is_processed=False)
 
-        # Verificar si el producto está en el carrito
-        if str(product_id) in cart:
-            cart[str(product_id)] -= 1
-            if cart[str(product_id)] <= 0:
-                del cart[str(product_id)]  # Eliminar el producto si su cantidad es 0
+                # Reducir la cantidad o eliminar si es 1
+                if cart_item.quantity > 1:
+                    cart_item.quantity -= 1
+                    cart_item.save()
+                else:
+                    cart_item.delete()
+                    product.stock += cart_item.quantity
+                    product.save()   
 
-            # Actualizar el carrito en la sesión
-            request.session['cart'] = cart
+                messages.success(request, f'{cart_item.product.name} eliminado del carrito.')
+            except CartItem.DoesNotExist:
+                messages.error(request, 'El producto no está en tu carrito.')
+        else:
+            # Usuario no autenticado: manejar en la sesión
+            cart = request.session.get('cart', {})
+
+            # Verificar si el producto está en el carrito
+            if str(product_id) in cart:
+                cart[str(product_id)] -= 1
+                if cart[str(product_id)] <= 0:
+                    del cart[str(product_id)]  # Eliminar el producto si su cantidad es 0
+
+                # Actualizar el carrito en la sesión
+                request.session['cart'] = cart
+                request.session.modified = True  # Asegurar que los cambios se guarden
+                 
+            else:
+                messages.error(request, 'El producto no está en tu carrito.')
 
         # Verificar el parámetro 'next' para redirigir a la página correspondiente
         next_url = request.POST.get('next', 'home')  # Redirige a 'home' por defecto
