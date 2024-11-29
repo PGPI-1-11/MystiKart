@@ -22,22 +22,25 @@ def add_to_cart(request, product_id):
         # Obtener la cantidad solicitada
         quantity = int(request.POST.get('quantity', 1))
         precio_total = 0
+
         # Comprobar si el usuario está autenticado
         if request.user.is_authenticated:
             # Usuario autenticado: manejar en base de datos
-            cart_items = CartItem.objects.filter(user=request.user, is_processed=False).select_related('product')
-            for item in cart_items:
-                 subtotal = item.product.price * item.quantity
-                 precio_total += subtotal
+            cart_item, created = CartItem.objects.get_or_create(
+                user=request.user, 
+                product=product, 
+                is_processed=False, 
+                defaults={'quantity': 0}
+            )
 
             # Verificar stock disponible
-            if cart_items.quantity() + quantity > product.stock:
+            if cart_item.quantity + quantity > product.stock:
                 messages.error(request, 'No hay suficiente stock disponible.')
                 return redirect('home')
 
             # Actualizar la cantidad del producto
-            cart_items.quantity += quantity
-            cart_items.save()
+            cart_item.quantity += quantity
+            cart_item.save()
         else:
             # Usuario no autenticado: manejar en la sesión
             cart = request.session.get('cart', {})
@@ -55,13 +58,13 @@ def add_to_cart(request, product_id):
 
             # Guardar el carrito en la sesión
             request.session['cart'] = cart
+           
 
         # Redirigir de vuelta al inicio o donde corresponda
         messages.success(request, f'{product.name} se ha agregado al carrito.')
         return redirect('home')  # Cambia 'home' por la página adecuada
     else:
         return redirect('home')
-
 
 
 def cart_detail(request):
