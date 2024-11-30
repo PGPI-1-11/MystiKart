@@ -21,7 +21,6 @@ def add_to_cart(request, product_id):
         product = get_object_or_404(Product, id=product_id)
         # Obtener la cantidad solicitada
         quantity = int(request.POST.get('quantity', 1))
-        precio_total = 0
 
         # Comprobar si el usuario está autenticado
         if request.user.is_authenticated:
@@ -41,8 +40,6 @@ def add_to_cart(request, product_id):
             # Actualizar la cantidad del producto
             cart_item.quantity += quantity
             cart_item.save()
-            product.stock -= quantity
-            product.save()         
         else:
             # Usuario no autenticado: manejar en la sesión
             cart = request.session.get('cart', {})
@@ -60,10 +57,6 @@ def add_to_cart(request, product_id):
 
             # Guardar el carrito en la sesión
             request.session['cart'] = cart
-            product.stock -= quantity
-            product.save()   
-            
-           
 
         # Redirigir de vuelta al inicio o donde corresponda
         messages.success(request, f'{product.name} se ha agregado al carrito.')
@@ -87,9 +80,7 @@ def cart_detail(request):
     precio_total = 0
     precio_total_con_envio = 0
 
-    # Calcular el costo de envío (ejemplo: 5€ si el total es menor a 100€, envío gratuito si es mayor)
     costo_envio = 10  # Valor fijo de ejemplo
-
 
     if request.user.is_authenticated:
         # Cargar los CartItem del usuario autenticado
@@ -171,11 +162,8 @@ def checkout_view(request):
         payment_option = request.POST.get('payment_option')
         delivery_option = request.POST.get('delivery_option')
         address = request.POST.get('address')
-        city = request.POST.get('city')
-        zip_code = request.POST.get('zip_code')
-        country = request.POST.get('country')
 
-        if not address or not city or not zip_code or not country:
+        if not address:
             messages.error(request, 'Todos los campos de dirección son obligatorios')
             return redirect('shoppingCart:checkout_view')
 
@@ -192,9 +180,8 @@ def checkout_view(request):
             if payment_option == 'tarjeta':
                 token = request.POST.get('stripeToken')
                 if not token:
-                    messages.error(request, 'Debe proporcionar los datos de la tarjeta para procesar el pago.')
+                    messages.error(request, 'Error al procesar el pago: Token no válido')
                     return redirect('shoppingCart:checkout_view')
-
 
                 try:
                     charge = stripe.Charge.create(
@@ -211,9 +198,6 @@ def checkout_view(request):
             order = Order.objects.create(
                 user=request.user if request.user.is_authenticated else None,
                 address=address,
-                city=city,
-                zip_code=zip_code,
-                country=country,
                 email=email,
                 status=Order.StatusChoices.PROCESADO,
                 precio_total=precio_total,
@@ -285,7 +269,7 @@ def checkout_view(request):
     return render(request, 'checkout.html', context)
 
 def order_confirmation(request):
-     # Si el usuario está autenticado
+    # Si el usuario está autenticado
     if request.user.is_authenticated:
         cart_items = CartItem.objects.filter(user=request.user, is_processed=False)
         for item in cart_items:
@@ -319,13 +303,12 @@ def order_confirmation(request):
                 messages.error(request, f'No hay suficiente stock para el producto {product.name}.')
                 return redirect('shoppingCart:cart_detail')
 
-        # Vaciamos el carrito de la sesión
-        del request.session['cart']
+        # Vaciamos el carrito de la sesión de manera segura
+        request.session.pop('cart', None)
         messages.success(request, "Gracias por tu compra. Tu carrito ha sido vaciado.")
     
-    # Redirigir a la página de inicio o una página de agradecimiento
-    return redirect('home')  # O cualquier otra página que quieras
-
+    # Redirigir a la página de agradecimiento
+    return render(request, 'confirmation.html', {'is_confirmation_page': True})
 
 def remove_from_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
