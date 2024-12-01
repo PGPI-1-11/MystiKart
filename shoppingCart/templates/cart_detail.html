@@ -54,6 +54,9 @@
     </p>
 
     <h3 class="shipping-title">Ingresa tu dirección de envío</h3>
+    <p class="login-notice">
+        Si has iniciado sesión, se tomará por defecto la dirección asociada a tu cuenta.
+    </p>
     <form method="post" novalidate class="shipping-form">
         {% csrf_token %}
         {{ form.as_p }}
@@ -264,6 +267,16 @@
     .shipping-form {
         margin: 20px 0;
         text-align: center;
+    }
+    .login-notice {
+        text-align: center;
+        font-size: 0.9rem;
+        color: #5e239d; /* Morado oscuro */
+        margin-bottom: 20px;
+        background-color: #f5f5f5;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
     }
 </style>
 {% endblock %}
