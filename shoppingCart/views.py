@@ -25,7 +25,7 @@ def add_to_cart(request, product_id):
         # Comprobar si el usuario está autenticado
         if request.user.is_authenticated:
             # Usuario autenticado: manejar en base de datos
-            cart_item, created = CartItem.objects.get_or_create(
+            cart, created = CartItem.objects.get_or_create(
                 user=request.user, 
                 product=product, 
                 is_processed=False, 
@@ -33,13 +33,13 @@ def add_to_cart(request, product_id):
             )
 
             # Verificar stock disponible
-            if cart_item.quantity + quantity > product.stock:
+            if cart.quantity + quantity > product.stock:
                 messages.error(request, 'No hay suficiente stock disponible.')
                 return redirect('home')
 
             # Actualizar la cantidad del producto
-            cart_item.quantity += quantity
-            cart_item.save()
+            cart.quantity += quantity
+            cart.save()
         else:
             # Usuario no autenticado: manejar en la sesión
             cart = request.session.get('cart', {})
@@ -311,23 +311,51 @@ def order_confirmation(request):
     return render(request, 'confirmation.html', {'is_confirmation_page': True})
 
 def remove_from_cart(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
     if request.method == 'POST':
-        cart = request.session.get('cart', {})
+        if request.user.is_authenticated:
+            # El usuario está autenticado, manejar en la base de datos
+            try:
+                cart = CartItem.objects.get(user=request.user, product_id=product_id, is_processed=False)
 
-        # Verificar si el producto está en el carrito
-        if str(product_id) in cart:
-            # Verificar si se quiere eliminar todo
-            remove_all = request.POST.get('remove_all', False)  # Detecta si es "eliminar todo"
+                remove_all = request.POST.get('remove_all', False)  # Detecta si es "eliminar todo"
+                
+                if remove_all:
+                    cart.delete()
+                else:
+                    cart.quantity -= 1
+                    if cart.quantity <= 0:
+                        cart.delete()  # Eliminar el producto si su cantidad es 0
+                    else:
+                        cart.save()
 
-            if remove_all:
-                del cart[str(product_id)]  # Elimina todo el producto del carrito
+                messages.success(request, f'{cart.product.name} eliminado del carrito.')
+            except CartItem.DoesNotExist:
+                messages.error(request, 'El producto no está en tu carrito.')
+        else:
+            # Usuario no autenticado: manejar en la sesión
+            cart = request.session.get('cart', {})
+
+            # Verificar si el producto está en el carrito
+            if str(product_id) in cart:
+                # Verificar si se quiere eliminar todo
+                remove_all = request.POST.get('remove_all', False)  # Detecta si es "eliminar todo"
+
+            # Verificar si el producto está en el carrito
+            if str(product_id) in cart:
+                if remove_all:
+                    del cart[str(product_id)]  # Eliminar el producto
+                else:
+                    cart[str(product_id)] -= 1
+                    if cart[str(product_id)] <= 0:
+                        del cart[str(product_id)]  # Eliminar el producto si su cantidad es 0
+
+                # Actualizar el carrito en la sesión
+                request.session['cart'] = cart
+                request.session.modified = True  # Asegurar que los cambios se guarden
+
             else:
-                cart[str(product_id)] -= 1  # Reduce 1 unidad
-                if cart[str(product_id)] <= 0:
-                    del cart[str(product_id)]  # Eliminar el producto si su cantidad es 0
-
-            # Actualizar el carrito en la sesión
-            request.session['cart'] = cart
+                messages.error(request, 'El producto no está en tu carrito.')
 
         # Verificar el parámetro 'next' para redirigir a la página correspondiente
         next_url = request.POST.get('next', 'home')  # Redirige a 'home' por defecto
