@@ -23,8 +23,17 @@ def home(request):
     
     # Calcular el total del carrito
      # Calcular el total del carrito usando la función calcular_total
-    for product_id, quantity in cart.items():
-        try:
+
+    if request.user.is_authenticated:
+        # Obtener items del carrito para usuarios autenticados
+        cart_items = CartItem.objects.filter(user=request.user, is_processed=False).select_related('product')
+        for item in cart_items:
+            subtotal = item.product.price * item.quantity
+            precio_total += subtotal
+    else:
+        # Obtener items del carrito de la sesión
+        cart = request.session.get('cart', {})
+        for product_id, quantity in cart.items():
             product = Product.objects.get(id=product_id)
             subtotal = product.price * quantity
             precio_total += subtotal
@@ -33,10 +42,6 @@ def home(request):
                 'quantity': quantity,
                 'subtotal': subtotal,
             })
-        except Product.DoesNotExist:
-            # Si el producto ya no existe, lo eliminamos del carrito
-            del cart[product_id]
-            request.session['cart'] = cart
 
 
     # Filtros para productos

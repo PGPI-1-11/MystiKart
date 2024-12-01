@@ -133,5 +133,62 @@
             "brand": 1,
             "image": "media/item_images/incienso_lavanda.jpg"
         }
+    },
+    {
+        "model": "order.Order",
+        "pk": 1,
+        "fields": {
+            "user": 2,
+            "address": "Calle Ficticia 123, Ciudad Ejemplo",
+            "email": "user@user.com",
+            "status": "enviado",
+            "precio_total": 75.00,
+            "id_tracking": "22222222", 
+            "shipping_cost": 5.00,
+            "delivery_option": "Domicilio",
+            "payment_option": "contra_reembolso",
+            "cardholder_name": null,
+            "card_number": null,
+            "expiration_date": null,
+            "cvv": null
+        }
+    },
+    {
+        "model": "order.Order",
+        "pk": 2,
+        "fields": {
+            "user": 2,
+            "address": "Calle Ficticia 123, Ciudad Ejemplo",
+            "email": "user@user.com",
+            "status": "procesado",
+            "precio_total": 75.00,
+            "id_tracking": "11111111", 
+            "shipping_cost": 5.00,
+            "delivery_option": "Domicilio",
+            "payment_option": "contra_reembolso",
+            "cardholder_name": null,
+            "card_number": null,
+            "expiration_date": null,
+            "cvv": null
+        }
+    },{
+        "model": "order.Order",
+        "pk": 3,
+        "fields": {
+            "user": 2,
+            "address": "Calle Ficticia 123, Ciudad Ejemplo",
+            "email": "user@user.com",
+            "status": "completado",
+            "precio_total": 75.00,
+            "id_tracking": "33333333", 
+            "shipping_cost": 5.00,
+            "delivery_option": "Domicilio",
+            "payment_option": "contra_reembolso",
+            "cardholder_name": null,
+            "card_number": null,
+            "expiration_date": null,
+            "cvv": null
+        }
     }
+    
 ]

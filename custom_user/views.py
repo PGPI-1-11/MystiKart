@@ -68,39 +68,6 @@ def user_admin_view(request):
 
     return render(request, "users.html",{'users': users})
 
-@user_passes_test(is_staff, login_url='login')
-def order_review(request, order_id):
-    order = get_object_or_404(Order, pk=order_id)
-    
-    review = order.review
-    
-    if review == None:
-        raise Http404("El recurso no fue encontrado")
-
-    if request.method == 'POST':
-        new_status = request.POST.get('is_accepted')
-        respuesta = request.POST.get('mensaje')
-        email = order.email
-        descripcion = review.description
-        print(respuesta)
-        if new_status in [Review.AcceptionStatus.ACCEPTED, Review.AcceptionStatus.DECLINED, Review.AcceptionStatus.PENDING]:
-            review.is_accepted = new_status
-            review.save()
-            enviar_correo(request,respuesta, email, descripcion, new_status)
-
-        else:
-            return HttpResponseBadRequest("Estado de revisión no válido")
-        
-    return render(request, 'review.html', {'order':order,'review': review})
-
-def enviar_correo(request, mensaje, email, descripcion, estado):
-    subject = 'Gestión de Reclamación'
-    message = render_to_string('email/gestionar_reclamacion.html', {'email':email, 'mensaje':mensaje, 'descripcion':descripcion, 'estado': estado})
-    plain_message = strip_tags(message)
-    from_email = 'phonedoctorpgpi@gmail.com' 
-    to_email = [email] 
-    send_mail(subject, plain_message, from_email, to_email, html_message=message)
-
 class StoreInfoView(View):
     template_name = 'store_info.html'     
     def get(self, request, *args, **kwargs):
