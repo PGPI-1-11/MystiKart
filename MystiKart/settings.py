@@ -80,7 +80,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'mystikartpgpi@gmail.com'
-EMAIL_HOST_PASSWORD = 'qsld ftwl epjn pxmc '
+EMAIL_HOST_PASSWORD = 'MystiKart2024'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -135,6 +135,10 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / ''
+
+# Stripe settings
+STRIPE_PUBLIC_KEY = 'pk_test_51OHPZ9JkuoHLkF3tZ5PofQvdPuAEltDJfkxabiakZc3ERBmEmrIUTUtMpOjo1QFGaR4WK6Wla9tZpHLO4EPo8mMj00KSI7b9BD'
+STRIPE_SECRET_KEY = 'sk_test_51QQ5A0IifA6ZkV8EZrtEIo71oYNVg5so1vGT5Y4tpV1Qkp10nv3J9wyIz2UwS5rT7qWFazlqXx5L1ZWN8deFoPD600fo1Eu58V'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
