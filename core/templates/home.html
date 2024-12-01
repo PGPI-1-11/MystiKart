@@ -316,9 +316,31 @@
         box-shadow: 0 1px 3px rgba(90, 27, 128, 0.5); /* Sombra más tenue al hacer clic */
     }
 
+    .remove-all-btn {
+        background: linear-gradient(135deg, #c0392b, #e74c3c); /* Degradado de tonos rojos */
+        color: #fff;
+        padding: 6px 12px;
+        border: 2px solid #a93226; /* Borde rojo oscuro */
+        border-radius: 6px;
+        font-size: 0.75rem; /* Tamaño de fuente igual al otro botón */
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        box-shadow: 0 2px 4px rgba(165, 50, 45, 0.4); /* Sombra sutil en tono rojo */
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Sombra suave en el texto */
+    }
 
+    .remove-all-btn:hover {
+        background: linear-gradient(135deg, #e74c3c, #c0392b); /* Cambio de colores en el hover */
+        transform: scale(1.03); /* Efecto sutil de expansión al pasar el mouse */
+        box-shadow: 0 3px 6px rgba(165, 50, 45, 0.6); /* Sombra más intensa al hover */
+    }
 
-
+    .remove-all-btn:active {
+        background: #a93226; /* Color sólido rojo oscuro al hacer clic */
+        transform: scale(0.95); /* Se encoje al hacer clic */
+        box-shadow: 0 1px 3px rgba(165, 50, 45, 0.5); /* Sombra más tenue al hacer clic */
+    }
 
 </style>
 
@@ -452,6 +474,15 @@
                                         Quitar 1
                                     </button>
                                 </form>
+                                <!-- Formulario para eliminar todos -->
+                                <form method="post" action="{% url 'shoppingCart:remove_from_cart' cart_item.product.id %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="next" value="{% url 'home' %}">
+                                    <input type="hidden" name="remove_all" value="true">
+                                    <button type="submit" class="remove-all-btn">
+                                        Eliminar todos
+                                    </button>
+                                </form>
                             </div>
                         {% endfor %}
                     {% else %}
@@ -465,13 +496,12 @@
             </div>
         
             <div class="card-wrapper search-section">
-                <h2 class="text-2xl text-center">Localiza tu pedido</h2>
+                <h2 class="text-2xl text-center">Localizador de pedidos</h2>
                 <div class="px-6 py-12 rounded-xl flex items-center justify-center">
-                    <form action="search_order" method="get" class="search-form">
-                        <input type="text" name="q" placeholder="Introduce el localizador" class="form-control">
-                        <button type="submit">
-                            <i class="fa fa-search"></i> Buscar
-                        </button>
+                    <form method="get" action="{% url 'order_search' %}">
+                        <label for="id_tracking">ID de Tracking:</label>
+                        <input type="text" id="id_tracking" name="id_tracking" required>
+                        <button type="submit">Buscar Pedido</button>
                     </form>
                 </div>
             </div>
