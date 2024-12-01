@@ -3,6 +3,7 @@ from product.models import Product
 from shoppingCart.models import CartItem
 from .forms import ShippingAddressForm 
 from django.contrib import messages
+from .models import ShippingAddress
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from django.core.mail import send_mail
@@ -176,7 +177,8 @@ def order_confirmation(request):
             cart_item.save()
             cart_items_for_order.append(cart_item)
 
-    # Si el usuario está autenticado, creamos el pedido con su dirección y datos
+    # Si el usuario está autenticado, obtenemos la dirección asociada
+    shipping_address_text = ""
     if request.user.is_authenticated:
         address = request.POST.get('address', '')
         tracking_id = generate_tracking_id()  # Genera un ID de seguimiento único
@@ -198,6 +200,19 @@ def order_confirmation(request):
         # Actualizamos el estado de los CartItems a 'procesado'
         CartItem.objects.filter(user_id=request.user.id, is_processed=False).update(is_processed=True)
 
+        # Obtener la dirección del usuario
+        try:
+            shipping_address = ShippingAddress.objects.filter(user=request.user).latest('id')
+            shipping_address_text = (
+                "Datos de envío:\n"
+                f"Nombre: {shipping_address.full_name}\n"
+                f"Calle: {shipping_address.address}\n"
+                f"Ciudad: {shipping_address.city}, {shipping_address.postal_code}\n"
+                f"País: {shipping_address.country}"
+            )
+        except ShippingAddress.DoesNotExist:
+            shipping_address_text = "Dirección de envío no especificada."
+
     else:
         # Si el usuario no está autenticado, simplemente creamos el pedido como 'invitado'
         address = request.POST.get('address', '')
@@ -218,11 +233,20 @@ def order_confirmation(request):
         for item in cart_items_for_order:
             order.items.add(item)
 
+        shipping_address_text = "Dirección de envío no especificada para usuarios no autenticados."
+
+    # Generar la lista de productos
+    product_list = "\n".join([f"- {item.product.name} (x{item.quantity})" for item in cart_items_for_order])
+
     # Define el contenido del email de confirmación
     subject = 'Confirmación de tu pedido en MystiKart'
     plain_message = (
-        f"Gracias por tu pedido en MystiKart.\n"
+        f"Estimado/a {shipping_address.full_name if request.user.is_authenticated else 'Cliente'},\n\n"
+        "Gracias por tu pedido en MystiKart.\n"
         "Tu pedido ha sido confirmado exitosamente y está siendo procesado.\n\n"
+        f"{shipping_address_text}\n\n"
+        "Productos incluidos:\n"
+        f"{product_list}\n\n"
         "Para ver el estado de tu pedido, utiliza el siguiente localizador:\n\n"
         f"Localizador: {order.id_tracking}\n\n"
         "Saludos,\n"
@@ -243,7 +267,6 @@ def order_confirmation(request):
 
     # Renderiza la página de confirmación
     return render(request, 'confirmation.html', {'order': order, 'is_confirmation_page': True})
-
 
 
 def remove_from_cart(request, product_id):
