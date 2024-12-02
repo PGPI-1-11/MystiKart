@@ -79,50 +79,54 @@
 
 <script src="https://js.stripe.com/v3/"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var stripe = Stripe('pk_test_51OHPZ9JkuoHLkF3tZ5PofQvdPuAEltDJfkxabiakZc3ERBmEmrIUTUtMpOjo1QFGaR4WK6Wla9tZpHLO4EPo8mMj00KSI7b9BD');
-        var elements = stripe.elements();
-        var card = elements.create('card');
-        card.mount('#card-element');
+document.addEventListener('DOMContentLoaded', function () {
+    var stripe = Stripe('pk_test_51OHPZ9JkuoHLkF3tZ5PofQvdPuAEltDJfkxabiakZc3ERBmEmrIUTUtMpOjo1QFGaR4WK6Wla9tZpHLO4EPo8mMj00KSI7b9BD');
+    var elements = stripe.elements();
+    var card = elements.create('card');
+    card.mount('#card-element');
 
-        var form = document.getElementById('payment-form');
-        var paymentOptionSelect = document.getElementById('payment_option');
-        var cardFields = document.getElementById('card-fields');
-        var confirmButton = document.querySelector('.confirm-button');
+    var form = document.getElementById('payment-form');
+    var paymentOptionSelect = document.getElementById('payment_option');
+    var cardFields = document.getElementById('card-fields');
+    var confirmButton = document.querySelector('.confirm-button');
+    var displayError = document.getElementById('card-errors');
 
-        paymentOptionSelect.addEventListener('change', function (event) {
-            var selectedOption = event.target.value;
-            if (selectedOption === 'tarjeta') {
-                cardFields.style.display = 'block';
-                confirmButton.disabled = true;
-            } else {
-                cardFields.style.display = 'none';
+    // Función para actualizar el estado del botón
+    function updateUIBasedOnPaymentOption() {
+        if (paymentOptionSelect.value === 'tarjeta') {
+            cardFields.style.display = 'block';
+            confirmButton.disabled = true;
+        } else {
+            cardFields.style.display = 'none';
+            confirmButton.disabled = false;
+        }
+    }
+
+    // Controlar cambio de método de pago
+    paymentOptionSelect.addEventListener('change', function () {
+        updateUIBasedOnPaymentOption();
+    });
+
+    // Validación del campo de tarjeta
+    card.addEventListener('change', function (event) {
+        if (event.error) {
+            displayError.textContent = event.error.message;
+            confirmButton.disabled = true;
+        } else {
+            displayError.textContent = '';
+            if (paymentOptionSelect.value === 'tarjeta') {
                 confirmButton.disabled = false;
             }
-        });
+        }
+    });
 
-        card.addEventListener('change', function (event) {
-            var displayError = document.getElementById('card-errors');
-            if (event.error) {
-                displayError.textContent = event.error.message;
-                confirmButton.disabled = true;
-            } else {
-                displayError.textContent = '';
-                if (paymentOptionSelect.value === 'tarjeta') {
-                    confirmButton.disabled = false;
-                }
-            }
-        });
-
-        form.addEventListener('submit', function (event) {
-            if (paymentOptionSelect.value === 'contra_reembolso') {
-                return;
-            }
+    // Controlar envío del formulario
+    form.addEventListener('submit', function (event) {
+        if (paymentOptionSelect.value === 'tarjeta') {
             event.preventDefault();
             stripe.createToken(card).then(function (result) {
                 if (result.error) {
-                    var errorElement = document.getElementById('card-errors');
-                    errorElement.textContent = result.error.message;
+                    displayError.textContent = result.error.message;
                 } else {
                     var hiddenInput = document.createElement('input');
                     hiddenInput.setAttribute('type', 'hidden');
@@ -132,8 +136,11 @@
                     form.submit();
                 }
             });
-        });
+        }
     });
+    // Inicializar el estado de la interfaz al cargar la página
+    updateUIBasedOnPaymentOption();
+});
 </script>
 
 <style>
