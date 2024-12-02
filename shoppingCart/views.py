@@ -85,12 +85,14 @@ def cart_detail(request):
 
     if form.is_valid() and request.method == 'POST':
         shipping_address = form.save(commit=False)
+
         if request.user.is_authenticated:
+            # Guardar la dirección para el usuario autenticado
             shipping_address.user = request.user
             shipping_address.save()
-            messages.success(request, 'Dirección confirmada')
+            messages.success(request, 'Dirección confirmada.')
         else:
-            # Guardar la dirección en la sesión si el usuario no está autenticado
+            # Guardar los datos en la sesión para usuarios no autenticados
             request.session['order_shipping_data'] = {
                 'full_name': shipping_address.full_name,
                 'address': shipping_address.address,
@@ -98,9 +100,10 @@ def cart_detail(request):
                 'postal_code': shipping_address.postal_code,
                 'country': shipping_address.country,
             }
-            messages.success(request, 'Dirección guardada en la sesión')
-        
-        return redirect('shoppingCart:cart_detail')
+            messages.success(request, 'Dirección guardada en la sesión.')
+
+        # Redirigir al proceso de pago
+        return redirect('shoppingCart:checkout_view')  
 
     cart_items = []
     precio_total = 0
@@ -116,6 +119,7 @@ def cart_detail(request):
             precio_total += subtotal
             cart_items.append(item)
     else:
+        # Manejo del carrito en la sesión
         cart = request.session.get('cart', {})
         for product_id, quantity in cart.items():
             product = Product.objects.get(id=product_id)
@@ -127,27 +131,22 @@ def cart_detail(request):
                 'subtotal': subtotal,
             })
 
-    # Lógica para aplicar el costo de envío
-    if precio_total < 100:  # Si el total es menor a 100€, agregar coste de envío
+    # Aplicar costo de envío
+    if precio_total < 100:  # Envío gratuito si el total es mayor o igual a 100
         precio_total_con_envio = precio_total + costo_envio
     else:
-        precio_total_con_envio = precio_total # Envío gratuito
+        precio_total_con_envio = precio_total
 
     return render(request, 'cart_detail.html', {
         'cart_items': cart_items,
         'precio_total': precio_total,
         'precio_total_con_envio': precio_total_con_envio,
         'form': form,
-        'costo_envio': costo_envio if precio_total < 100 else 0,  # Mostrar el costo si es aplicable
+        'costo_envio': costo_envio if precio_total < 100 else 0,
     })
 
-    return render(request, 'cart_detail.html', {
-        'cart_items': cart_items,
-        'precio_total': precio_total,
-        'precio_total_con_envio': precio_total_con_envio,
-        'form': form,
-        'costo_envio': costo_envio if precio_total < 100 else 0,  # Mostrar el costo si es aplicable
-    })
+
+
 
 def generate_unique_random_string(length=10):
     while True: 
@@ -432,7 +431,7 @@ def order_confirmation(request):
         f"{shipping_address_text}\n\n"
         "Productos incluidos:\n"
         f"{product_list}\n\n"
-        f"Total a pagar: {total_a_pagar}\n\n"
+        f"Total a pagar: {total_a_pagar}€\n\n"
         "Para ver el estado de tu pedido, utiliza el siguiente localizador:\n\n" +
         f"Localizador: {order.id_tracking}\n\n"
         "Saludos,\nMystiKart"

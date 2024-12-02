@@ -55,15 +55,13 @@
 
     <h3 class="shipping-title">Ingresa tu dirección de envío</h3>
     <p class="login-notice">
-        Si has iniciado sesión, se tomará por defecto la dirección asociada a tu cuenta.
+        Debes confirmar los datos de envio antes de pasar al pago
     </p>
     <form method="post" novalidate class="shipping-form">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="button confirm-button">Confirmar dirección de envío</button>
+        <button type="submit" class="button checkout-button">Confirmar y Proceder al Pago</button>
     </form>
-
-    <a href="{% url 'shoppingCart:checkout_view' %}" class="button checkout-button">Proceder al Pago</a>
 </div>
 
 <style>
@@ -256,17 +254,24 @@
         /* Morado oscuro */
         text-align: center;
         margin-top: 20px;
-        display: block;
+        display: inline-block;  /* Asegura que el botón se trate como un bloque */
+        padding: 10px 20px;     /* Agrega algo de espacio alrededor del texto */
+        border-radius: 5px;     /* Redondea las esquinas */
+        width: auto;            /* Ajusta el tamaño al contenido */
+        font-size: 1rem;        /* Tamaño de la fuente */
+        text-decoration: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
     }
 
     .checkout-button:hover {
         background-color: #452070;
     }
 
-    /* Formulario */
+    /* Asegúrate de que el contenedor del formulario tenga 'text-align: center' */
     .shipping-form {
         margin: 20px 0;
-        text-align: center;
+        text-align: center;  /* Esto centra todo el contenido del formulario, incluyendo el botón */
     }
     .login-notice {
         text-align: center;
