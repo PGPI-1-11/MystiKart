@@ -19,9 +19,11 @@ def checkout_view(request):
     return render(request, 'checkout.html', {'cart_items': cart_items, 'precio_total': precio_total})
 
 def product_info(request, pk):
+    # Obtener el producto seleccionado por su ID (pk)
+    producto_info = get_object_or_404(Product, pk=pk)
+    
     mensaje = ""
     mensaje_cantidad = ""
-    product = get_object_or_404(Product, pk=pk)
     cart = request.session.get('cart', {})
     cart_items = []
     precio_total = 0
@@ -45,7 +47,7 @@ def product_info(request, pk):
    
 
     return render(request, 'info.html', {
-        'product': product,
+        'product': producto_info,  # Aseguramos que el producto mostrado sea el seleccionado
         'cart_items': cart_items,
         'precio_total': precio_total,
         'mensaje': mensaje,
