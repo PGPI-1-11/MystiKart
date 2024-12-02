@@ -401,8 +401,8 @@ def order_confirmation(request):
         shipping_cost=10.0,  # Asume un costo fijo de envío o aplica lógica según el pedido
         id_tracking=tracking_id,
         status=Order.StatusChoices.PROCESADO,  # O el estado correspondiente
-        delivery_option=request.POST.get('delivery_option', 'Domicilio'),
-        payment_option=request.POST.get('payment_option', 'contra_reembolso')
+        delivery_option=request.POST.get('delivery_option', 'Domicilio'),  # Se agrega la opción de entrega
+        payment_option=request.POST.get('payment_option', 'contra_reembolso')  # Se agrega la opción de pago
     )
 
     # Relacionar los items del carrito con el pedido
@@ -432,6 +432,8 @@ def order_confirmation(request):
         "Productos incluidos:\n"
         f"{product_list}\n\n"
         f"Total a pagar: {total_a_pagar}€\n\n"
+        f"Metodo de entrega: {order.get_delivery_option_display()}\n"
+        f"Metodo de pago: {order.get_payment_option_display()}\n\n"
         "Para ver el estado de tu pedido, utiliza el siguiente localizador:\n\n" +
         f"Localizador: {order.id_tracking}\n\n"
         "Saludos,\nMystiKart"

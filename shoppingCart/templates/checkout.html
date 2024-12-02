@@ -23,7 +23,16 @@
         {% if user.is_authenticated %}
             <form id="payment-form" class="mt-4" method="post" action="{% url 'shoppingCart:order_confirmation' %}">
                 {% csrf_token %}
-                
+
+                <!-- Opción de entrega -->
+                <div class="mb-4 flex flex-col justify-between block mt-2 p-4 bg-white rounded-xl">
+                    <label for="delivery_option" class="block text-sm font-medium text-gray-700">Método de entrega:</label>
+                    <select name="delivery_option" id="delivery_option" class="mt-1 p-2 w-full border rounded-md" required>
+                        <option value="Domicilio">A Domicilio</option>
+                        <option value="Correos">En Correos</option>
+                    </select>
+                </div>
+
                 <div class="mb-4 flex flex-col justify-between block mt-2 p-4 bg-white rounded-xl">
                     <label for="payment_option" class="block text-sm font-medium text-gray-700">Opción de pago:</label>
                     <select name="payment_option" id="payment_option" class="mt-1 p-2 w-full border rounded-md" required>
@@ -51,6 +60,15 @@
                 <div class="mb-4 flex flex-col justify-between block mt-2 p-4 bg-white rounded-xl">
                     <label for="email" class="block text-sm font-medium text-gray-700">Correo electrónico</label>
                     <input type="text" name="email" id="email" placeholder="Ingresa tu correo electrónico" required class="mt-1 p-2 w-full border rounded-md">
+                </div>
+
+                <!-- Opción de entrega -->
+                <div class="mb-4 flex flex-col justify-between block mt-2 p-4 bg-white rounded-xl">
+                    <label for="delivery_option" class="block text-sm font-medium text-gray-700">Método de entrega:</label>
+                    <select name="delivery_option" id="delivery_option" class="mt-1 p-2 w-full border rounded-md" required>
+                        <option value="Domicilio">A Domicilio</option>
+                        <option value="Correos">En Correos</option>
+                    </select>
                 </div>
 
                 <div class="mb-4 flex flex-col justify-between block mt-2 p-4 bg-white rounded-xl">
