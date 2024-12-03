@@ -21,8 +21,6 @@ def order_detail(request, order_id):
         'state_map': state_map,
     })
 
-
-
 def order_search(request):
     tracking_id = request.GET.get('id_tracking')  
     if tracking_id:
@@ -46,5 +44,6 @@ def order_search(request):
             })
         except Order.DoesNotExist:
             messages.error(request, 'El ID de seguimiento no existe.')
-            return redirect('home')  
-
+            return redirect('home')
+    else:
+        return redirect('home')
