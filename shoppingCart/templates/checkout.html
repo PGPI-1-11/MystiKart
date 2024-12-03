@@ -14,16 +14,38 @@
         {% endfor %}
     </ul>
 
-    <p><strong>Costo de Envío:</strong> {{ shipping_cost }} €</p>
-    <p class="order-total">Total Productos: <span class="total-amount">{{ precio_total }} €</span></p>
-    <p class="order-total">Total con Envío: <span class="total-amount">{{ precio_total|add:shipping_cost }} €</span></p>
-
+    <div class="order-summary">
+        <p>Total Productos: <span class="total-amount">{{ precio_total }} €</span></p>
+        <p>Costo de Envío: <span class="total-amount">+ {{ shipping_cost }} €</span></p>        
+        <div class="total-with-shipping">
+            <p>
+                <hr style="border: 1px solid #ccc; margin: 5px 0;">
+                <span class="total-with-shipping" style="display: inline-block; font-size: 1.5rem; font-weight: bold; margin-left: 10px;">
+                    Total:
+                </span>
+                <span class="total-amount" style="display: inline-block; font-size: 1.5rem; font-weight: bold;">
+                    {{ precio_total|add:shipping_cost }} €
+                </span>
+            </p>
+        </div>
+    </div>
+    
+    
     <div class="mt-6 px-6 py-12 bg-gray-100 rounded-xl">
-        <h2 class="text-2xl text-center font-bold mb-4 border-b">Datos de entrega</h2>
+        <h2 class="order-review-title">Datos de entrega</h2>
         {% if user.is_authenticated %}
             <form id="payment-form" class="mt-4" method="post" action="{% url 'shoppingCart:order_confirmation' %}">
                 {% csrf_token %}
-                
+
+                <!-- Opción de entrega -->
+                <div class="mb-4 flex flex-col justify-between block mt-2 p-4 bg-white rounded-xl">
+                    <label for="delivery_option" class="block text-sm font-medium text-gray-700">Método de entrega:</label>
+                    <select name="delivery_option" id="delivery_option" class="mt-1 p-2 w-full border rounded-md" required>
+                        <option value="Domicilio">A Domicilio</option>
+                        <option value="Correos">En Correos</option>
+                    </select>
+                </div>
+
                 <div class="mb-4 flex flex-col justify-between block mt-2 p-4 bg-white rounded-xl">
                     <label for="payment_option" class="block text-sm font-medium text-gray-700">Opción de pago:</label>
                     <select name="payment_option" id="payment_option" class="mt-1 p-2 w-full border rounded-md" required>
@@ -51,6 +73,15 @@
                 <div class="mb-4 flex flex-col justify-between block mt-2 p-4 bg-white rounded-xl">
                     <label for="email" class="block text-sm font-medium text-gray-700">Correo electrónico</label>
                     <input type="text" name="email" id="email" placeholder="Ingresa tu correo electrónico" required class="mt-1 p-2 w-full border rounded-md">
+                </div>
+
+                <!-- Opción de entrega -->
+                <div class="mb-4 flex flex-col justify-between block mt-2 p-4 bg-white rounded-xl">
+                    <label for="delivery_option" class="block text-sm font-medium text-gray-700">Método de entrega:</label>
+                    <select name="delivery_option" id="delivery_option" class="mt-1 p-2 w-full border rounded-md" required>
+                        <option value="Domicilio">A Domicilio</option>
+                        <option value="Correos">En Correos</option>
+                    </select>
                 </div>
 
                 <div class="mb-4 flex flex-col justify-between block mt-2 p-4 bg-white rounded-xl">
@@ -153,82 +184,132 @@ html, body {
 }
 
 .order-review-container {
-    padding: 20px;
+    padding: 30px; /* Más espacio interno */
     background-color: #ffffff;
     border-radius: 8px;
-    max-width: 800px;
-    margin: 20px auto;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 900px; /* Ancho ajustado */
+    margin: 40px auto; /* Más separación vertical */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); /* Sombra más destacada */
 }
 
 .order-review-title {
     color: #5e239d;
     text-align: center;
-    font-size: 1.5rem;
-    margin-bottom: 20px;
+    font-size: 1.8rem; /* Tamaño más grande */
+    margin-bottom: 30px; /* Mayor separación del título */
 }
 
 .order-items {
     list-style: none;
     padding: 0;
-    margin: 0 0 20px 0;
+    margin: 0 0 30px 0;
 }
 
 .order-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
-    margin-bottom: 10px;
-    background-color: #fff;
+    padding: 15px; /* Espaciado interno mayor */
+    margin-bottom: 15px; /* Más espacio entre elementos */
+    background-color: #fefefe; /* Fondo blanco limpio */
     border: 1px solid #ddd;
-    border-radius: 5px;
+    border-radius: 6px; /* Bordes un poco más redondeados */
 }
 
 .product-name {
-    font-size: 1rem;
+    font-size: 1.1rem; /* Tamaño más grande */
     color: #333;
     flex: 1;
 }
 
 .product-quantity, .product-price {
-    font-size: 0.9rem;
-    color: #666;
-    margin-left: 10px;
+    font-size: 1rem;
+    color: #555; /* Color más suave */
+    margin-left: 15px; /* Más separación entre texto */
 }
 
-.order-total {
-    text-align: right;
-    font-size: 1.2rem;
+.order-summary {
+    text-align: left; /* Alineación al contenido */
+    font-size: 1rem; 
     font-weight: bold;
     color: #333;
+    background-color: #f9f9f9; 
+    padding: 20px; /* Más espacio interno */
+    border-radius: 8px; /* Bordes más suaves */
+    margin: 20px auto; /* Separación más pronunciada */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra mejorada */
+    max-width: 500px; /* Ajuste de ancho */
 }
 
-.total-amount {
-    color: #5e239d;
+.order-summary p {
+    margin: 10px 0; /* Separación uniforme entre líneas */
+    font-size: 1rem;
+    color: #666; /* Texto más suave */
 }
 
-.button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    color: #fff;
-    font-size: 0.9rem;
-    text-decoration: none;
-    cursor: pointer;
-    display: inline-block;
-    transition: background-color 0.3s ease;
+.order-summary .total-amount {
+    color: #5e239d; 
+    font-weight: bold;
+    font-size: 1.2rem; /* Destacado del tamaño */
+}
+
+.order-summary .total-with-shipping {
+    font-size: 1.3rem; /* Más grande para resaltar */
+    color: #5e239d; /* Color destacado */
+    margin-top: 15px; /* Separación superior */
 }
 
 .confirm-button {
-    background-color: #3498db;
+    background-color: #5e239d; /* Color que combina con el tema */
+    color: #fff;
     display: block;
-    margin: 20px auto 0;
+    margin: 30px auto 0;
     text-align: center;
+    font-size: 1rem; /* Tamaño del texto ajustado */
+    padding: 15px 30px; /* Botón más grande */
+    transition: all 0.3s ease;
 }
 
 .confirm-button:hover {
-    background-color: #2980b9;
+    background-color: #472076; /* Sutil variación */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra en hover */
 }
+
+#payment-form select, 
+#payment-form input {
+    font-size: 1rem; /* Tamaño ajustado */
+    padding: 10px; /* Espaciado interno */
+    margin: 5px 0; /* Separación uniforme */
+    width: calc(100% - 20px); /* Alinear con otros elementos */
+    border: 1px solid #ddd;
+    border-radius: 5px; /* Bordes redondeados */
+}
+
+#payment-form label {
+    font-size: 1rem; /* Tamaño unificado */
+    color: #333;
+    margin-bottom: 5px;
+}
+
+#payment-form .block {
+    background-color: #f9f9f9; /* Fondo más claro */
+    padding: 20px; /* Más espacio interno */
+    border-radius: 6px; /* Bordes redondeados */
+    margin-bottom: 20px; /* Más separación */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+#card-errors {
+    color: red;
+    font-size: 0.9rem; /* Tamaño ajustado */
+    margin-top: 10px;
+}
+
+button:disabled {
+    background-color: #bbb; /* Color más claro */
+    cursor: not-allowed;
+}
+
+
 </style>
 {% endblock %}

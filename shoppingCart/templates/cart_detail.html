@@ -13,35 +13,40 @@
     {% endfor %}
     {% endif %}
 
-    {% for cart_item in cart_items %}
-    <div class="cart-item">
-        <div class="cart-item-details">
-            <p class="cart-item-name">{{ cart_item.quantity }} x {{ cart_item.product.name }}</p>
-            <p class="cart-item-price">{{ cart_item.quantity }} x {{ cart_item.product.price }} €</p>
-        </div>
+    {% if cart_items %}
+        {% for cart_item in cart_items %}
+        <div class="cart-item">
+            <div class="cart-item-details">
+                <p class="cart-item-name">{{ cart_item.quantity }} x {{ cart_item.product.name }}</p>
+                <p class="cart-item-price">{{ cart_item.quantity }} x {{ cart_item.product.price }} €</p>
+            </div>
 
-        <!-- Botón para quitar 1 -->
-        <form class="remove-from-cart-form" method="post"
-            action="{% url 'shoppingCart:remove_from_cart' cart_item.product.id %}">
-            {% csrf_token %}
-            <input type="hidden" name="next" value="{% url 'shoppingCart:cart_detail' %}">
-            <button type="submit" class="remove-from-cart-btn">
-                Quitar 1
-            </button>
-        </form>
+            <!-- Botón para quitar 1 -->
+            <form class="remove-from-cart-form" method="post"
+                action="{% url 'shoppingCart:remove_from_cart' cart_item.product.id %}">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{% url 'shoppingCart:cart_detail' %}">
+                <button type="submit" class="remove-from-cart-btn">
+                    Quitar 1
+                </button>
+            </form>
 
-        <!-- Botón para eliminar todos -->
-        <form class="remove-from-cart-form" method="post"
-            action="{% url 'shoppingCart:remove_from_cart' cart_item.product.id %}">
-            {% csrf_token %}
-            <input type="hidden" name="next" value="{% url 'shoppingCart:cart_detail' %}">
-            <input type="hidden" name="remove_all" value="true"> <!-- Indicador de eliminación completa -->
-            <button type="submit" class="remove-all-btn">
-                Eliminar todos
-            </button>
-        </form>
+            <!-- Botón para eliminar todos -->
+            <form class="remove-from-cart-form" method="post"
+                action="{% url 'shoppingCart:remove_from_cart' cart_item.product.id %}">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{% url 'shoppingCart:cart_detail' %}">
+                <input type="hidden" name="remove_all" value="true"> <!-- Indicador de eliminación completa -->
+                <button type="submit" class="remove-all-btn">
+                    Eliminar todos
+                </button>
+            </form>
     </div>
     {% endfor %}
+    {% else %}
+        <p class="empty-cart-message"><br> El carrito está vacío. <br>
+            Por favor, añade productos para continuar.</p>
+    {% endif %}
 
 
     <div class="total">
@@ -54,13 +59,14 @@
     </p>    
 
     <h3 class="shipping-title">Ingresa tu dirección de envío</h3>
+    <p class="login-notice">
+        Debes confirmar los datos de envio antes de pasar al pago
+    </p>
     <form method="post" novalidate class="shipping-form">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="button confirm-button">Confirmar dirección de envío</button>
+        <button type="submit" class="button checkout-button">Confirmar y Proceder al Pago</button>
     </form>
-
-    <a href="{% url 'shoppingCart:checkout_view' %}" class="button checkout-button">Proceder al Pago</a>
 </div>
 
 <style>
@@ -133,6 +139,7 @@
         font-size: 1.2rem;
         font-weight: bold;
         color: #333;
+        text-align: center;
     }
 
     .total-amount {
@@ -253,17 +260,40 @@
         /* Morado oscuro */
         text-align: center;
         margin-top: 20px;
-        display: block;
+        display: inline-block;  /* Asegura que el botón se trate como un bloque */
+        padding: 10px 20px;     /* Agrega algo de espacio alrededor del texto */
+        border-radius: 5px;     /* Redondea las esquinas */
+        width: auto;            /* Ajusta el tamaño al contenido */
+        font-size: 1rem;        /* Tamaño de la fuente */
+        text-decoration: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
     }
 
     .checkout-button:hover {
         background-color: #452070;
     }
 
-    /* Formulario */
+    /* Asegúrate de que el contenedor del formulario tenga 'text-align: center' */
     .shipping-form {
         margin: 20px 0;
+        text-align: center;  /* Esto centra todo el contenido del formulario, incluyendo el botón */
+    }
+    .login-notice {
         text-align: center;
+        font-size: 0.9rem;
+        color: #5e239d; /* Morado oscuro */
+        margin-bottom: 20px;
+        background-color: #f5f5f5;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+    }
+    .empty-cart-message {
+        text-align: center;
+        font-size: 0.8rem; /* Tamaño del texto */
+        color: #333; /* Color del texto */
+        margin-top: 20px; /* Espaciado superior */
     }
 </style>
 {% endblock %}

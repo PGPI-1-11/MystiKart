@@ -18,42 +18,44 @@
                 </a>
             </div>
 
-            <!-- Center Section: Search Bar -->
-            <div class="search-container">
-                <form action="" method="get" class="search-form">
-                    <input type="text" name="q" placeholder="Buscar productos">
-                    <button type="submit">
-                        <i class="fa fa-search"></i>
-                    </button>
-                </form>
-            </div>
+            {% if request.resolver_match.view_name == 'home' %}
 
-            <!-- Right Section: User Options -->
-            <div class="user-container">
-                {% if user.is_authenticated %}
-                <p class="welcome-text">Bienvenido, {{ user.first_name }}
-                <form action="{% url 'logout' %}" method="post" class="logout-form">
-                    {% csrf_token %}
-                    <button type="submit" class="logout-button">
-                        Cerrar sesión
-                    </button>
-                </form>
-                </p>
-                {% else %}
-                <a href="{% url 'login' %}" class="login-button">Iniciar sesión</a>
-                {% endif %}
-            </div>
+                <!-- Center Section: Search Bar -->
+                <div class="search-container">
+                    <form action="" method="get" class="search-form">
+                        <input type="text" name="q" placeholder="Buscar productos">
+                        <button type="submit">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </form>
+                </div>
 
-            <!-- Cart Section -->
-            <div class="cart-container">
-                {% if not is_confirmation_page %}
+                <!-- Right Section: User Options -->
+                <div class="user-container">
+                    {% if user.is_authenticated %}
+                    <p class="welcome-text">Bienvenido, {{ user.first_name }}
+                    <form action="{% url 'logout' %}" method="post" class="logout-form">
+                        {% csrf_token %}
+                        <button type="submit" class="logout-button">
+                            Cerrar sesión
+                        </button>
+                    </form>
+                    </p>
+                    {% else %}
+                    <a href="{% url 'login' %}" class="login-button">Iniciar sesión</a>
+                    {% endif %}
+                </div>
+
+                <!-- Cart Section -->
+                <div class="cart-container">
+                    {% if not is_confirmation_page %}
                     <a href="{% url 'shoppingCart:cart_detail' %}" class="cart-button">
                         <i class="fa fa-shopping-cart"></i>
-                        <span class="cart-total"></span>
+                        <span class="cart-total">Total: {{ precio_total }} €</span>
                     </a>
-                {% endif %}
-            </div>            
-
+                    {% endif %}
+                </div>
+            {% endif %}
         </div>
     </header>
 </body>

@@ -7,8 +7,18 @@ from product.models import Product
 from shoppingCart.models import CartItem
 from .forms import ShippingAddressForm 
 from django.contrib import messages
+from .models import ShippingAddress
+from django.http import JsonResponse
+from django.middleware.csrf import get_token
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from order.models import Order
+from django.contrib.auth.decorators import login_required
+from django.utils import timezone
+import random
+import string
 import stripe
-from django.shortcuts import redirect
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -65,16 +75,35 @@ def add_to_cart(request, product_id):
         return redirect('home')
 
 
+def generate_tracking_id():
+    """Genera un ID de seguimiento único con letras y números aleatorios."""
+    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
+
+
 def cart_detail(request):
     form = ShippingAddressForm(request.POST or None)
 
     if form.is_valid() and request.method == 'POST':
         shipping_address = form.save(commit=False)
+
         if request.user.is_authenticated:
+            # Guardar la dirección para el usuario autenticado
             shipping_address.user = request.user
-        shipping_address.save()
-        messages.success(request, 'Dirección confirmada')
-        return redirect('shoppingCart:cart_detail')
+            shipping_address.save()
+            messages.success(request, 'Dirección confirmada.')
+        else:
+            # Guardar los datos en la sesión para usuarios no autenticados
+            request.session['order_shipping_data'] = {
+                'full_name': shipping_address.full_name,
+                'address': shipping_address.address,
+                'city': shipping_address.city,
+                'postal_code': shipping_address.postal_code,
+                'country': shipping_address.country,
+            }
+            messages.success(request, 'Dirección guardada en la sesión.')
+
+        # Redirigir al proceso de pago
+        return redirect('shoppingCart:checkout_view')  
 
     cart_items = []
     precio_total = 0
@@ -90,7 +119,7 @@ def cart_detail(request):
             precio_total += subtotal
             cart_items.append(item)
     else:
-        
+        # Manejo del carrito en la sesión
         cart = request.session.get('cart', {})
         for product_id, quantity in cart.items():
             product = Product.objects.get(id=product_id)
@@ -102,19 +131,22 @@ def cart_detail(request):
                 'subtotal': subtotal,
             })
 
-    # Lógica para aplicar el costo de envío
-    if precio_total < 100:  # Si el total es menor a 100€, agregar coste de envío
+    # Aplicar costo de envío
+    if precio_total < 100:  # Envío gratuito si el total es mayor o igual a 100
         precio_total_con_envio = precio_total + costo_envio
     else:
-        precio_total_con_envio = precio_total # Envío gratuito
+        precio_total_con_envio = precio_total
 
     return render(request, 'cart_detail.html', {
         'cart_items': cart_items,
         'precio_total': precio_total,
         'precio_total_con_envio': precio_total_con_envio,
         'form': form,
-        'costo_envio': costo_envio if precio_total < 100 else 0,  # Mostrar el costo si es aplicable
+        'costo_envio': costo_envio if precio_total < 100 else 0,
     })
+
+
+
 
 def generate_unique_random_string(length=10):
     while True: 
@@ -269,46 +301,155 @@ def checkout_view(request):
     return render(request, 'checkout.html', context)
 
 def order_confirmation(request):
-    # Si el usuario está autenticado
+    # Obtener el carrito del usuario
+    cart_items_for_order = []
+    precio_total = 0
+    shipping_address = None
+    user_email = request.user.email if request.user.is_authenticated else request.POST.get('email')
+
+    if not user_email:
+        messages.error(request, 'Por favor ingresa un correo electrónico válido.')
+        return redirect('home')
+
+    # Obtener los productos del carrito
     if request.user.is_authenticated:
+        # Si el usuario está autenticado, obtener el carrito asociado
         cart_items = CartItem.objects.filter(user=request.user, is_processed=False)
-        for item in cart_items:
-            # Verificamos el stock antes de procesar el pedido
+    else:
+        # Si el usuario no está autenticado, obtener el carrito desde la sesión
+        cart_session = request.session.get('cart', {})
+        cart_items = []
+        if isinstance(cart_session, dict):
+            for product_id, quantity in cart_session.items():
+                try:
+                    product = Product.objects.get(id=product_id)
+                    cart_items.append({
+                        'product': product,
+                        'quantity': quantity
+                    })
+                except Product.DoesNotExist:
+                    continue
+
+    # Procesar los productos del carrito
+    for item in cart_items:
+        if isinstance(item, CartItem):
             product = item.product
             if product.stock >= item.quantity:
-                # Actualizar el stock
+                subtotal = product.price * item.quantity
+                precio_total += subtotal
+                cart_items_for_order.append(item)
                 product.stock -= item.quantity
                 product.save()
-
-                # Marcamos el item como procesado
                 item.is_processed = True
                 item.save()
             else:
-                # Si no hay suficiente stock
                 messages.error(request, f'No hay suficiente stock para el producto {product.name}.')
                 return redirect('shoppingCart:cart_detail')
-        
-        messages.success(request, "Gracias por tu compra. Tu carrito ha sido vaciado.")
-    else:
-        # Si el usuario no está autenticado, vaciamos el carrito de la sesión
-        cart = request.session.get('cart', {})
-        for product_id, quantity in cart.items():
-            product = Product.objects.get(id=product_id)
+        else:
+            product = item['product']
+            quantity = item['quantity']
             if product.stock >= quantity:
-                # Actualizamos el stock
+                subtotal = product.price * quantity
+                precio_total += subtotal
                 product.stock -= quantity
                 product.save()
+                cart_item = CartItem(product=product, quantity=quantity,
+                                     user=request.user if request.user.is_authenticated else None)
+                cart_item.save()
+                cart_items_for_order.append(cart_item)
             else:
-                # Si no hay suficiente stock
                 messages.error(request, f'No hay suficiente stock para el producto {product.name}.')
                 return redirect('shoppingCart:cart_detail')
 
-        # Vaciamos el carrito de la sesión de manera segura
+    # Recuperar o crear una dirección de envío
+    shipping_address_text = ""
+    if request.user.is_authenticated:
+        # Si el usuario está autenticado, obtener su dirección de envío
+        shipping_address = ShippingAddress.objects.filter(user=request.user).latest('id')
+        shipping_address_text = (
+            "Datos de envío:\n"
+            f"Calle: {shipping_address.address}, {shipping_address.postal_code},\n"
+            f"Ciudad: {shipping_address.city},\n"
+            f"País: {shipping_address.country}"
+        )
+    else:
+        # Si el usuario no está autenticado, usar los datos de la sesión (si existen)
+        order_data = request.session.get('order_shipping_data')
+        if order_data:
+            shipping_address = ShippingAddress(
+                full_name=order_data.get('full_name'),
+                address=order_data.get('address'),
+                city=order_data.get('city'),
+                postal_code=order_data.get('postal_code'),
+                country=order_data.get('country')
+            )
+            shipping_address.save()
+            shipping_address_text = (
+                "Datos de envío:\n"
+                f"Calle: {shipping_address.address}, {shipping_address.postal_code}\n"
+                f"Ciudad: {shipping_address.city},\n"
+                f"País: {shipping_address.country}"
+            )
+
+    # Crear el pedido
+    tracking_id = generate_tracking_id()  # Genera un ID único para el seguimiento del pedido
+    order = Order.objects.create(
+        user=request.user if request.user.is_authenticated else None,
+        address=shipping_address_text,  # Puedes usar un campo texto o un modelo para la dirección
+        email=user_email,
+        precio_total=precio_total,
+        shipping_cost=10.0,  # Asume un costo fijo de envío o aplica lógica según el pedido
+        id_tracking=tracking_id,
+        status=Order.StatusChoices.PROCESADO,  # O el estado correspondiente
+        delivery_option=request.POST.get('delivery_option', 'Domicilio'),  # Se agrega la opción de entrega
+        payment_option=request.POST.get('payment_option', 'contra_reembolso')  # Se agrega la opción de pago
+    )
+
+    # Relacionar los items del carrito con el pedido
+    order.items.set(cart_items_for_order)
+
+    product_list = "\n".join([f"- {item.product.name} (x{item.quantity})" for item in cart_items_for_order])
+
+    # Limpiar el carrito de la sesión si el usuario no está autenticado
+    if not request.user.is_authenticated:
         request.session.pop('cart', None)
-        messages.success(request, "Gracias por tu compra. Tu carrito ha sido vaciado.")
+
+    # Calcular el total a pagar (precio total + costo de envío)
+    if precio_total > 100.0:
+        total_a_pagar = precio_total  # Si el total es mayor a 100€, no se añade el costo de envío
+    else:
+        total_a_pagar = precio_total + 10.0  # Si el total es menor o igual a 100€, añadir 10€ de envío
+
+    # Enviar correo de confirmación al cliente
+    subject = 'Confirmación de tu pedido en MystiKart'
     
-    # Redirigir a la página de agradecimiento
-    return render(request, 'confirmation.html', {'is_confirmation_page': True})
+    # Se genera un mensaje detallado
+    plain_message = (
+        f"Estimado/a {shipping_address.full_name},\n\n"
+        "Gracias por tu pedido en MystiKart.\n"
+        "Tu pedido ha sido confirmado exitosamente y está siendo procesado.\n\n"
+        f"{shipping_address_text}\n\n"
+        "Productos incluidos:\n"
+        f"{product_list}\n\n"
+        f"Total a pagar: {total_a_pagar}€\n\n"
+        f"Metodo de entrega: {order.get_delivery_option_display()}\n"
+        f"Metodo de pago: {order.get_payment_option_display()}\n\n"
+        "Para ver el estado de tu pedido, utiliza el siguiente localizador:\n\n" +
+        f"Localizador: {order.id_tracking}\n\n"
+        "Saludos,\nMystiKart"
+    )
+
+    from_email = 'MystiKart <mystikartpgpi@gmail.com>'
+    to_email = [user_email]
+
+    try:
+        send_mail(subject, plain_message, from_email, to_email)
+        messages.success(request, 'Se ha enviado un correo de confirmación a tu dirección proporcionada.')
+    except Exception as e:
+        messages.error(request, f'No se pudo enviar el correo: {e}')
+
+    return render(request, 'confirmation.html', {'order': order, 'is_confirmation_page': True})
+
 
 def remove_from_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
