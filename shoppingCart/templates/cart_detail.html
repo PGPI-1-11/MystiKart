@@ -13,35 +13,40 @@
     {% endfor %}
     {% endif %}
 
-    {% for cart_item in cart_items %}
-    <div class="cart-item">
-        <div class="cart-item-details">
-            <p class="cart-item-name">{{ cart_item.quantity }} x {{ cart_item.product.name }}</p>
-            <p class="cart-item-price">{{ cart_item.quantity }} x {{ cart_item.product.price }} €</p>
-        </div>
+    {% if cart_items %}
+        {% for cart_item in cart_items %}
+        <div class="cart-item">
+            <div class="cart-item-details">
+                <p class="cart-item-name">{{ cart_item.quantity }} x {{ cart_item.product.name }}</p>
+                <p class="cart-item-price">{{ cart_item.quantity }} x {{ cart_item.product.price }} €</p>
+            </div>
 
-        <!-- Botón para quitar 1 -->
-        <form class="remove-from-cart-form" method="post"
-            action="{% url 'shoppingCart:remove_from_cart' cart_item.product.id %}">
-            {% csrf_token %}
-            <input type="hidden" name="next" value="{% url 'shoppingCart:cart_detail' %}">
-            <button type="submit" class="remove-from-cart-btn">
-                Quitar 1
-            </button>
-        </form>
+            <!-- Botón para quitar 1 -->
+            <form class="remove-from-cart-form" method="post"
+                action="{% url 'shoppingCart:remove_from_cart' cart_item.product.id %}">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{% url 'shoppingCart:cart_detail' %}">
+                <button type="submit" class="remove-from-cart-btn">
+                    Quitar 1
+                </button>
+            </form>
 
-        <!-- Botón para eliminar todos -->
-        <form class="remove-from-cart-form" method="post"
-            action="{% url 'shoppingCart:remove_from_cart' cart_item.product.id %}">
-            {% csrf_token %}
-            <input type="hidden" name="next" value="{% url 'shoppingCart:cart_detail' %}">
-            <input type="hidden" name="remove_all" value="true"> <!-- Indicador de eliminación completa -->
-            <button type="submit" class="remove-all-btn">
-                Eliminar todos
-            </button>
-        </form>
+            <!-- Botón para eliminar todos -->
+            <form class="remove-from-cart-form" method="post"
+                action="{% url 'shoppingCart:remove_from_cart' cart_item.product.id %}">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{% url 'shoppingCart:cart_detail' %}">
+                <input type="hidden" name="remove_all" value="true"> <!-- Indicador de eliminación completa -->
+                <button type="submit" class="remove-all-btn">
+                    Eliminar todos
+                </button>
+            </form>
     </div>
     {% endfor %}
+    {% else %}
+        <p class="empty-cart-message"><br> El carrito está vacío. <br>
+            Por favor, añade productos para continuar.</p>
+    {% endif %}
 
 
     <div class="total">
@@ -282,6 +287,12 @@
         padding: 10px;
         border-radius: 5px;
         border: 1px solid #ddd;
+    }
+    .empty-cart-message {
+        text-align: center;
+        font-size: 0.8rem; /* Tamaño del texto */
+        color: #333; /* Color del texto */
+        margin-top: 20px; /* Espaciado superior */
     }
 </style>
 {% endblock %}
