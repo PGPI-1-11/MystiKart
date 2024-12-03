@@ -9,7 +9,8 @@ class Category(models.Model):
 
     class Meta:
         ordering = ('name',)
-        verbose_name_plural='Categories'
+        verbose_name = ("Categoria")
+        verbose_name_plural = ("Categorias")
 
     def __str__(self):
         return self.name
@@ -19,7 +20,8 @@ class Brand(models.Model):
 
     class Meta:
         ordering = ('name',)
-        verbose_name_plural='Brands'
+        verbose_name = ("Marca")
+        verbose_name_plural = ("Marcas")
 
     def __str__(self):
         return self.name
@@ -37,6 +39,11 @@ class Product(models.Model):
 
     def is_in_stock(self):
         return self.stock > 0
+
+    class Meta:
+        verbose_name = ("Producto")
+        verbose_name_plural = ("Productos")
+
 
 
     def __str__(self):

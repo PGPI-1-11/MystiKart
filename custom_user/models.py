@@ -11,5 +11,10 @@ class User(BaseUser):
 
     objects = BaseUserManager()
 
+    class Meta:
+        verbose_name = ("Usuario")
+        verbose_name_plural = ("Usuarios")
+
+
     def __str__(self):
         return self.email
