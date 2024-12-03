@@ -18,7 +18,7 @@ class Order(models.Model):
 
     # Detalles del pedido
     items = models.ManyToManyField(CartItem, related_name='order_items')
-    user = models.ForeignKey(User, related_name='order_user', on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, related_name='order_user', on_delete=models.CASCADE, null=True, blank=True)
     address = models.CharField(max_length=255)
     email = models.EmailField(max_length=100, null=True)
     status = models.CharField(max_length=20, choices=StatusChoices.choices, default=StatusChoices.PROCESADO)
@@ -37,6 +37,11 @@ class Order(models.Model):
     card_number = models.CharField(max_length=16, null=True, blank=True)
     expiration_date = models.DateField(null=True, blank=True)
     cvv = models.CharField(max_length=3, null=True, blank=True)
+
+    class Meta:
+        verbose_name = ("Pedido")
+        verbose_name_plural = ("Pedidos")
+
 
     @property
     def total_price_with_shipping(self):
