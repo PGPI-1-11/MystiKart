@@ -42,7 +42,13 @@ class RegistrationViewTests(TestCase):
         self.valid_user_data = {
             'email': 'test@example.com',
             'password1': 'testpassword123',
-            'password2': 'testpassword123'
+            'password2': 'testpassword123',
+            'first_name': 'Test',
+            'last_name': 'User',
+            'direccion': '123 Test St',
+            'ciudad': 'TestCity',
+            'codigo_postal': '12345',
+            'pais': 'TestCountry'
         }
 
     def test_get_registration_page(self):
@@ -52,7 +58,7 @@ class RegistrationViewTests(TestCase):
     def test_successful_registration(self):
         response = self.client.post(self.register_url, self.valid_user_data)
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, self.login_url)
+        self.assertRedirects(response,  reverse('home'))
         self.assertTrue(
             User.objects.filter(email='test@example.com').exists()
         )
