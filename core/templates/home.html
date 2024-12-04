@@ -1,8 +1,583 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block title %}Bienvenido a MystiKart{% endblock %}
 
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" crossorigin="anonymous" />
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+
 {% block content %}
+<style>
+    main {
+        text-align: center;
+        padding: 50px 20px;
+        background-color: #1e1e2f;
+        color: #e0e0f0;
+        font-family: 'Georgia', serif;
+    }
+
+    h1 {
+        color: #f1e8b8;
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+    
+    .category-filter h2 {
+        color: #5a1b80;
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 15px;
+        text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .container {
+        display: grid;
+        grid-template-columns: 1fr 3fr 1fr;  
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .card-wrapper {
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .category-filter {
+        padding: 10px;
+        background-color: #f1f1f1;
+        border-radius: 10px;
+        text-align: center;
+    }
+
+    .category-filter form {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .category-filter button {
+        background-color: #993cfca1;
+        border: none;
+        padding: 10px 0;
+        cursor: pointer;
+        border-radius: 5px;
+        font-size: 1rem;
+        width: 100%;
+        transition: background-color 0.3s;
+    }
+
+    .category-filter button:hover {
+        background-color: #5e239d;
+    }
+
+    .category-filter .active {
+        background-color: #5e239d;
+    }
+    .category-title {
+    color: #5a1b80; /* Color similar al usado en Filtrar por Categoría */
+    font-size: 1.5rem; /* Tamaño de fuente similar al de Filtrar por Categoría */
+    font-weight: bold; /* Estilo en negrita */
+    margin-bottom: 15px; /* Espacio debajo */
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3); /* Sombra de texto similar */
+}
+
+    .products-section {
+        padding: 20px;
+    }
+
+    .grid-products {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .card {
+        border-radius: 10px;
+        overflow: hidden;
+        background-color: #ffffff;
+        box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1);
+        color: #000;
+    }
+
+    .card-img-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 200px;
+        background-color: #f1f1f1;
+    }
+
+    .card img {
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+    }
+
+    .card-body {
+        padding: 15px;
+    }
+
+    .card-body h4 {
+        color: #fff;
+        font-weight: bold;
+    }
+
+    .card-body p {
+        color: #000000;
+    }
+
+    /* Nueva sección para mostrar stock */
+    .stock.badge {
+        padding: 5px 10px;
+        font-size: 1rem;
+        border-radius: 12px;
+        display: inline-block;
+        margin-top: 10px;
+        text-align: center;
+    }
+
+    .bg-success {
+        background-color: #7beb849f;
+        color: rgb(28, 189, 49);
+    }
+
+    .bg-danger {
+        background-color: #fd6f6f80;
+        color: rgb(248, 0, 0);
+    }
+
+    .cart-section {
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        margin-bottom: 20px;
+        max-width: 500px;
+        width: 100%;
+        margin: 0 auto;
+        margin-bottom: 20px; /* Espacio inferior para separar las tarjetas */
+    }
+
+    .cart-section h2 {
+        color: #000;
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+        text-align: center; /* Centrado del título */
+    }
+
+    .cart-section p {
+        color: #000;
+    }
+
+    .cart-section .cart-items {
+        margin-top: 10px;
+        margin-right: 10px;
+    }
+
+    .cart-section .cart-items .cart-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        margin-right: 10px;
+    }
+
+    .cart-section .total {
+        font-weight: bold;
+        margin-top: 10px;
+        text-align: center; /* Centrado del total */
+    }
+
+    .cart-section .shipping-message {
+        font-size: 0.9rem;
+        color: #888;
+        margin-top: 10px;
+    }
+
+    .cart-section .shipping-message {
+        font-size: 0.9rem;
+        color: #888;
+        margin-top: 10px;
+    }
+
+    .search-section {
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        margin-bottom: 20px;
+        max-width: 500px;
+        width: 100%;
+        margin: 0 auto;
+        margin-top: 20px; /* Espacio superior para separar las tarjetas */
+    }
+
+    .search-section h2 {
+        color: #000;
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+        text-align: center; /* Centrado del título */
+    }
+
+    .search-section p {
+        color: #000;
+    }
+
+    .search-section .search-form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .search-section input[type="text"],
+    .search-section button {
+        padding: 10px;
+        width: 100%;  /* Aseguramos que el cuadro de texto y el botón no se solapen */
+        background-color: #f1f1f1;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 1rem;
+        color: #333;
+    }
+
+    /* Ajuste específico para no sobresalir de la tarjeta */
+    .search-section input[type="text"] {
+        max-width: 90%;  /* Evita que sobresalga */
+        margin-right: auto; /* Alinea al centro, con margen a la derecha */
+    }
+
+    .search-section button {
+        background-color: #5e239d;
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .search-section button:hover {
+        background-color: #3f1c7c;
+    }
+
+    .card-body button {
+        background: linear-gradient(135deg, #6e1b9c, #b462d1); /* Degradado místico */
+        color: #fff;
+        padding: 6px 12px; /* Tamaño más compacto */
+        border: 2px solid #5a1b80; /* Borde púrpura oscuro */
+        border-radius: 6px; /* Bordes más pequeños */
+        font-size: 0.6rem; /* Fuente más pequeña */
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        box-shadow: 0 2px 4px rgba(90, 27, 128, 0.4); /* Sombra suave */
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Sombra en el texto */
+    }
+
+    .card-body button:hover {
+        background: linear-gradient(135deg, #b462d1, #f3d1f8); /* Cambia a un degradado más claro */
+        transform: scale(1.03); /* Efecto hover más sutil */
+        box-shadow: 0 3px 6px rgba(90, 27, 128, 0.6); /* Sombra más intensa */
+    }
+
+    .card-body button:active {
+        background: #5a1b80; /* Color sólido púrpura oscuro al hacer clic */
+        transform: scale(0.95); /* Se encoge un poco */
+        box-shadow: 0 1px 3px rgba(90, 27, 128, 0.5); /* Sombra más tenue */
+    }
+    .remove-from-cart-btn {
+        background: linear-gradient(135deg, #6e1b9c, #b462d1); /* Degradado de morados profundos */
+        color: #fff;
+        padding: 6px 12px;
+        border: 2px solid #5a1b80; /* Borde morado oscuro */
+        border-radius: 6px;
+        font-size: 0.75rem; /* Tamaño de fuente ligeramente más pequeño */
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        box-shadow: 0 2px 4px rgba(90, 27, 128, 0.4); /* Sombra sutil en tono morado */
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Sombra suave en el texto */
+        margin-right: 10px; /* Añade un margen a la derecha del botón "Quitar 1" */
+    }
+
+    .remove-from-cart-btn:hover {
+        background: linear-gradient(135deg, #b462d1, #6e1b9c); /* Cambio de colores en el hover */
+        transform: scale(1.03); /* Efecto sutil de expansión al pasar el mouse */
+        box-shadow: 0 3px 6px rgba(90, 27, 128, 0.6); /* Sombra más intensa al hover */
+    }
+
+    .remove-from-cart-btn:active {
+        background: #5a1b80; /* Color sólido púrpura oscuro al hacer clic */
+        transform: scale(0.95); /* Se encoje al hacer clic */
+        box-shadow: 0 1px 3px rgba(90, 27, 128, 0.5); /* Sombra más tenue al hacer clic */
+    }
+
+    .remove-all-btn {
+        background: linear-gradient(135deg, #c0392b, #e74c3c); /* Degradado de tonos rojos */
+        color: #fff;
+        padding: 6px 12px;
+        border: 2px solid #a93226; /* Borde rojo oscuro */
+        border-radius: 6px;
+        font-size: 0.75rem; /* Tamaño de fuente igual al otro botón */
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        box-shadow: 0 2px 4px rgba(165, 50, 45, 0.4); /* Sombra sutil en tono rojo */
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Sombra suave en el texto */
+    }
+
+    .remove-all-btn:hover {
+        background: linear-gradient(135deg, #e74c3c, #c0392b); /* Cambio de colores en el hover */
+        transform: scale(1.03); /* Efecto sutil de expansión al pasar el mouse */
+        box-shadow: 0 3px 6px rgba(165, 50, 45, 0.6); /* Sombra más intensa al hover */
+    }
+
+    .remove-all-btn:active {
+        background: #a93226; /* Color sólido rojo oscuro al hacer clic */
+        transform: scale(0.95); /* Se encoje al hacer clic */
+        box-shadow: 0 1px 3px rgba(165, 50, 45, 0.5); /* Sombra más tenue al hacer clic */
+    }
+
+    /* Añade esto a tu archivo CSS */
+    .tracking-label {
+        color: #333; /* Cambia el color del texto */
+        font-size: 16px; /* Cambia el tamaño de la fuente */
+        font-weight: bold; /* Cambia el peso de la fuente */
+        margin-right: 10px; /* Añade un margen a la derecha */
+    }
+
+    .tracking-input {
+        margin: 10px 0; /* Añade un margen a la derecha del cuadro de texto */
+    }
+
+    .add-to-cart-container {
+        margin-top: 20px; /* Añade un margen superior para separar del stock del producto */
+    }
+
+    @media (max-width: 768px) {
+    .container {
+        grid-template-columns: 1fr; /* Cambiar a una sola columna en móviles */
+        gap: 10px;
+    }
+
+    .card-wrapper {
+        padding: 10px;
+    }
+
+    .grid-products {
+        grid-template-columns: 1fr; /* Productos en una sola columna */
+    }
+
+    .card-body {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 2rem; /* Reducir el tamaño del título */
+    }
+
+    .card-body h4 {
+        font-size: 1.2rem; /* Ajustar los títulos de productos */
+    }
+
+    .card-body p {
+        font-size: 0.9rem; /* Reducir tamaño de texto en párrafos */
+    }
+
+    .card-body button {
+        padding: 5px 10px;
+        font-size: 0.8rem; /* Botones más compactos */
+    }
+
+    .category-filter form button {
+        font-size: 0.9rem;
+        padding: 8px;
+    }
+    .card img {
+    max-width: 100%;
+    height: auto; /* Mantener proporción */
+}
+    main {
+        padding: 20px 10px;
+    }
+
+}
+
+
+</style>
+
+<main>
+    <!-- Bloque para mostrar mensajes -->
+    {% if messages %}
+        <div id="message-container" class="mb-4">
+            {% for message in messages %}
+                <div 
+                    class="p-4 mb-4 rounded shadow-md {{ message.tags }} message-alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Script para ocultar el mensaje automáticamente -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const messageContainer = document.getElementById('message-container');
+                if (messageContainer) {
+                    // Desaparece después de 5 segundos
+                    setTimeout(() => {
+                        messageContainer.style.transition = "opacity 1s ease-out";
+                        messageContainer.style.opacity = "0";
+                        setTimeout(() => {
+                            messageContainer.remove();
+                        }, 1000); // Espera a que termine la animación
+                    }, 5000); // Mantiene el mensaje visible durante 5 segundos
+                }
+            });
+        </script>
+    {% endif %}
+
+    <!-- Contenido principal -->
     <h1>Bienvenido a MystiKart</h1>
     <p>Explora nuestros productos y disfruta de una experiencia de compra fácil y segura.</p>
+
+    <div class="container">
+        <!-- Filtro de Categorías -->
+        <div class="card-wrapper">
+            <div class="category-filter">
+                <h2>Categoría</h2>
+                <form method="get" action="{% url 'home' %}">
+                    <button type="submit" name="category" value="" {% if not category_filter %}class="active"{% endif %}>Todas</button>
+                    {% for category in categories %}
+                        <button type="submit" name="category" value="{{ category.name }}" {% if category.name == category_filter %}class="active"{% endif %}>
+                            {{ category.name }}
+                        </button>
+                    {% endfor %}
+                </form>
+            </div>
+
+            <!-- Filtro de Marcas -->
+            <div class="card-wrapper">
+                <div class="category-filter">
+                    <h2>Marca</h2>
+                    <form method="get" action="{% url 'home' %}">
+                        <button type="submit" name="brand" value="" {% if not brand_filter %}class="active"{% endif %}>Todas</button>
+                        {% for brand in brands %}
+                            <button type="submit" name="brand" value="{{ brand.name }}" {% if brand.name == brand_filter %}class="active"{% endif %}>
+                                {{ brand.name }}
+                            </button>
+                        {% endfor %}
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Productos -->
+        <div class="card-wrapper">
+            <div class="products-section">
+                <div class="row">
+                    {% if category_filter %}
+                        <h2 class="category-title">{{ category_filter }}</h2>
+                    {% endif %}
+            
+                    {% if no_products %}
+                        <p>No hay productos disponibles en esta categoría.</p>
+                    {% else %}
+                        <div class="grid-products">
+                            {% for product in products %}
+                                <div class="card">
+                                    <a href="{% url 'product:product_info' pk=product.id %}">
+                                        <div class="card-img-wrapper">
+                                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                                        </div>
+                                    </a>
+                                    <div class="card-body">
+                                        <h3 class="product-name text-xl">{{ product.name }}</h3>
+                                        <p class="product-price text-xl">{{ product.price }} €</p>
+                                        <div class="stock badge {% if product.is_in_stock %}bg-success{% else %}bg-danger{% endif %}">
+                                            {% if product.is_in_stock %}
+                                                Quedan: {{ product.stock }}
+                                            {% else %}
+                                                Sin productos
+                                            {% endif %}
+                                        </div>
+                                  
+                                        <!-- Formulario para añadir al carrito -->
+                                        <div class="add-to-cart-container">
+                                            <form action="{% url 'shoppingCart:add_to_cart' product.id %}" method="POST">
+                                                {% csrf_token %}
+                                                <input type="number" name="quantity" min="1" max="{{ product.stock }}" value="1" class="quantity-input">
+                                                <button type="submit" class="add-to-cart-btn">
+                                                    Añadir al carrito
+                                                </button>
+                                            </form>
+                                        </div>                                                                              
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>            
+        </div>
+
+        <!-- Carrito de Compras -->
+        <div>
+            <div class="card-wrapper cart-section">
+                <h2 class="text-2xl text-center">Carrito de la Compra</h2>
+                <div class="cart-items">
+                    {% if cart_items %}
+                        {% for cart_item in cart_items %}
+                            <div class="cart-item">
+                                <p>{{ cart_item.quantity }} x {{ cart_item.product.name }}</p>
+                                <p>{{ cart_item.subtotal }} €</p>
+                                <!-- Formulario para eliminar una unidad -->
+                                <form method="post" action="{% url 'shoppingCart:remove_from_cart' cart_item.product.id %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="next" value="{% url 'home' %}">
+                                    <button type="submit" class="remove-from-cart-btn">
+                                        Quitar 1
+                                    </button>
+                                </form>
+                                <!-- Formulario para eliminar todos -->
+                                <form method="post" action="{% url 'shoppingCart:remove_from_cart' cart_item.product.id %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="next" value="{% url 'home' %}">
+                                    <input type="hidden" name="remove_all" value="true">
+                                    <button type="submit" class="remove-all-btn">
+                                        Eliminar todos
+                                    </button>
+                                </form>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>El carrito está vacío.</p>
+                    {% endif %}
+                </div>
+                <div class="total">
+                    <p>Total: {{ precio_total }} €</p>
+                </div>
+                <p class="shipping-message">El envío se calcula en la pasarela de pagos.<br> Envío gratuito a partir de 100€</p>
+            </div>
+        
+            <div class="card-wrapper search-section">
+                <h2 class="text-2xl text-center">Localizador de pedidos</h2>
+                <div class="px-6 py-12 rounded-xl flex items-center justify-center">
+                    <form method="get" action="{% url 'order_search' %}">
+                        <label for="id_tracking" class="tracking-label">ID de Tracking:</label>
+                        <input type="text" id="id_tracking" name="id_tracking" class="tracking-input" required>
+                        <button type="submit" class="tracking-button">Buscar Pedido</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
 {% endblock %}

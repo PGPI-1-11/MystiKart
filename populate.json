@@ -1,24 +1,56 @@
 [
     {
-        "model": "core.Category",
+        "model": "custom_user.User",
+        "pk": 1,
+        "fields": {
+            "email": "admin@admin.com",
+            "password": "adm1n",
+            "is_superuser": true,
+            "is_staff": true
+        }
+    },
+    {
+        "model": "custom_user.User",
+        "pk": 2,
+        "fields": {
+            "email": "user@user.com",
+            "password": "us3r",
+            "is_superuser": false,
+            "is_staff": false
+        }
+    },
+    {
+        "model": "product.Brand",
+        "pk": 1,
+        "fields": {
+            "name": "Trendz Bisutería"
+        }
+    },
+    {
+        "model": "product.Brand",
+        "pk": 2,
+        "fields": {
+            "name": "AW Artisan"
+        }
+    },
+    {
+        "model": "product.Category",
         "pk": 1,
         "fields": {
             "name": "Cristales y Minerales",
-            "description": "Cristales energéticos y minerales naturales.",
-            "slug": "cristales-y-minerales"
+            "parent_category": null
         }
     },
     {
-        "model": "core.Category",
+        "model": "product.Category",
         "pk": 2,
         "fields": {
             "name": "Velas y Sahumerios",
-            "description": "Velas aromáticas, sahumerios y productos para purificación.",
-            "slug": "velas-y-sahumerios"
+            "parent_category": null
         }
     },
     {
-        "model": "core.Product",
+        "model": "product.Product",
         "pk": 1,
         "fields": {
             "name": "Cuarzo Rosa",
@@ -27,110 +59,136 @@
             "stock": 20,
             "is_available": true,
             "category": 1,
-            "image": "products/2024/01/cuarzo_rosa.jpg",
-            "manufacturer": "MystiKart",
-            "slug": "cuarzo-rosa"
+            "brand": 2,
+            "image": "media/item_images/cuarzo_rosa.jpg"
         }
     },
     {
-        "model": "core.Product",
+        "model": "product.Product",
         "pk": 2,
         "fields": {
             "name": "Vela de Canela",
             "description": "Vela aromática de canela para atraer la abundancia.",
-            "price": "15.00",
+            "price": 15.00,
             "stock": 50,
             "is_available": true,
             "category": 2,
-            "image": "products/2024/01/vela_canela.jpg",
-            "manufacturer": "MystiKart",
-            "slug": "vela-de-canela"
+            "brand": 2,
+            "image": "media/item_images/vela_canela.jpg"
+        }
+    },
+    
+    {
+        "model": "product.Product",
+        "pk": 3,
+        "fields": {
+            "brand": 2,
+            "category": 2,
+            "name": "Vela de Vainilla",
+            "description": "Vela aromática de vainilla para un ambiente acogedor.",
+            "price": 12.00,
+            "stock": 0,
+            "is_available": true,
+            "image": "media/item_images/vela_vainilla.jpg"
         }
     },
     {
-        "model": "core.UserProfile",
+        "model": "product.Product",
+        "pk": 4,
+        "fields": {
+            "brand": 2,
+            "category": 2,
+            "name": "Vela de Jazmín",
+            "description": "Vela aromática de jazmín para un ambiente romántico.",
+            "price": 14.00,
+            "stock": 35,
+            "is_available": true,
+            "image": "media/item_images/vela_jazmin.jpg"
+        }
+    },
+    {
+        "model": "product.Product",
+        "pk": 5,
+        "fields": {
+            "name": "Incienso de Canela",
+            "description": "Incienso aromático de canela para atraer la abundancia.",
+            "price": 10.00,
+            "stock": 100,
+            "is_available": true,
+            "category": 2,
+            "brand": 1,
+            "image": "media/item_images/incienso_canela.jpg"
+        }
+    },
+    {
+        "model": "product.Product",
+        "pk": 6,
+        "fields": {
+            "name": "Incienso de Lavanda",
+            "description": "Incienso aromático de lavanda para relajar y calmar.",
+            "price": 12.00,
+            "stock": 80,
+            "is_available": true,
+            "category": 2,
+            "brand": 1,
+            "image": "media/item_images/incienso_lavanda.jpg"
+        }
+    },
+    {
+        "model": "order.Order",
         "pk": 1,
         "fields": {
-            "user": 1,
-            "is_registered": true,
-            "email_verified": true,
-            "phone": "+34 600 000 000"
+            "user": 2,
+            "address": "Calle Ficticia 123, Ciudad Ejemplo",
+            "email": "user@user.com",
+            "status": "enviado",
+            "precio_total": 75.00,
+            "id_tracking": "22222222", 
+            "shipping_cost": 5.00,
+            "delivery_option": "Domicilio",
+            "payment_option": "contra_reembolso",
+            "cardholder_name": null,
+            "card_number": null,
+            "expiration_date": null,
+            "cvv": null
         }
     },
     {
-        "model": "core.Cart",
-        "pk": 1,
-        "fields": {
-            "user": 1,
-            "created_at": "2024-01-01T12:00:00Z"
-        }
-    },
-    {
-        "model": "core.CartItem",
-        "pk": 1,
-        "fields": {
-            "user": 1,
-            "product": 1,
-            "quantity": 2,
-            "is_processed": false
-        }
-    },
-    {
-        "model": "core.CartItem",
+        "model": "order.Order",
         "pk": 2,
         "fields": {
-            "user": 1,
-            "product": 2,
-            "quantity": 3,
-            "is_processed": false
-        }
-    },
-    {
-        "model": "core.ShippingAddress",
-        "pk": 1,
-        "fields": {
-            "user": 1,
-            "full_name": "Juan Pérez",
-            "address": "Calle Falsa 123",
-            "city": "Madrid",
-            "postal_code": "28001",
-            "country": "España"
-        }
-    },
-    {
-        "model": "core.Order",
-        "pk": 1,
-        "fields": {
-            "user": 1,
-            "review": null,
-            "address": "Calle Falsa 123",
-            "email": "juan@example.com",
+            "user": 2,
+            "address": "Calle Ficticia 123, Ciudad Ejemplo",
+            "email": "user@user.com",
             "status": "procesado",
-            "precio_total": "95.00",
-            "id_tracking": "TRCK123456",
-            "shipping_cost": 5.0,
+            "precio_total": 75.00,
+            "id_tracking": "11111111", 
+            "shipping_cost": 5.00,
             "delivery_option": "Domicilio",
-            "payment_option": "contra_reembolso"
+            "payment_option": "contra_reembolso",
+            "cardholder_name": null,
+            "card_number": null,
+            "expiration_date": null,
+            "cvv": null
         }
-    },
-    {
-        "model": "core.Payment",
-        "pk": 1,
+    },{
+        "model": "order.Order",
+        "pk": 3,
         "fields": {
-            "order": 1,
-            "amount": "95.00",
-            "payment_method": "Tarjeta",
-            "payment_status": "Pagado",
-            "transaction_id": "TX123456"
-        }
-    },
-    {
-        "model": "core.OrderTracking",
-        "pk": 1,
-        "fields": {
-            "order": 1,
-            "status": "En camino",
-            "updated_at": "2024-01-02T12:00:00Z"
+            "user": 2,
+            "address": "Calle Ficticia 123, Ciudad Ejemplo",
+            "email": "user@user.com",
+            "status": "completado",
+            "precio_total": 75.00,
+            "id_tracking": "33333333", 
+            "shipping_cost": 5.00,
+            "delivery_option": "Domicilio",
+            "payment_option": "contra_reembolso",
+            "cardholder_name": null,
+            "card_number": null,
+            "expiration_date": null,
+            "cvv": null
         }
     }
+    
 ]

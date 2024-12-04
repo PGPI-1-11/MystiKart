@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    html,
+    body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        font-family: 'Georgia', serif;
+        background-color: #1e1e2f;
+    }
+
+    main {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .order-detail-container {
+        background-color: #ffffff;
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        max-width: 900px;
+        width: 100%;
+        text-align: center;
+    }
+
+    .order-detail-container h3 {
+        font-size: 2rem;
+        color: #5e239d;
+        margin-bottom: 80px;
+        margin-top: 5px;
+    }
+
+    .progress-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 30px 0;
+        position: relative;
+        width: 100%;
+    }
+
+    .progress-step {
+        position: relative;
+        z-index: 2;
+        width: 35px;
+        height: 35px;
+        background-color: #ddd;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 0.65rem;
+        font-weight: bold;
+        color: #fff;
+        text-align: center;
+        padding: 17px;
+    }
+
+    .progress-fill {
+        position: absolute;
+        top: 50%;
+        height: 4px;
+        z-index: 0;
+        transform: translateY(-50%);
+        width: 100%;
+        outline: 2px solid transparent;
+    }
+
+    .progress-fill-color {
+        background-color: #5e239d;
+    }
+
+    .progress-step.active {
+        background-color: #5e239d;
+    }
+
+    .progress-step.completed {
+        background-color: #4c1d8c;
+    }
+
+    .progress-bar::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 4px;
+        z-index: 1;
+        transform: translateY(-50%);
+    }
+
+    .order-info {
+        background-color: #f8f8f8;
+        padding: 20px;
+        border-radius: 6px;
+        margin-bottom: 15px;
+        color: #333;
+        font-size: 1.1rem;
+        text-align: left;
+    }
+
+    .order-info p {
+        margin: 15px 0;
+    }
+
+    .order-info strong {
+        color: #5e239d;
+    }
+
+    .back-btn {
+        background-color: #5e239d;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 6px;
+        width: 100%;
+        font-size: 1.2rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-top: 30px;
+    }
+
+    .back-btn:hover {
+        background-color: #4c1d8c;
+    }
+
+    .progress-step .progress-icon {
+        position: absolute;
+        top: -70px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 3rem;
+    }
+</style>
+
+<main>
+    <div class="order-detail-container">
+        {% if order %}
+        <h3>Detalles del Pedido</h3>
+
+        <div class="progress-bar">
+            {% for step, state in state_map %}
+            <div class="progress-step 
+                        {% if order_progress == step %}active{% elif order_progress > step %}completed{% endif %}">
+                <div class="progress-icon">
+                    {% if step == 1 %}
+                    🏭
+                    {% elif step == 2 %}
+                    🚚
+                    {% elif step == 3 %}
+                    ✅
+                    {% endif %}
+                </div>
+                {{ state }}
+            </div>
+            {% endfor %}
+
+            <!-- Modified progress fill to always be purple -->
+            <div class="progress-fill 
+            {% if order_progress == 1 %}progress-fill-color
+            {% elif order_progress == 2 %}progress-fill-color
+            {% else %}progress-fill-color{% endif %}"
+                style="width: {% if order_progress == 1 %}30%{% elif order_progress == 2 %}75%{% else %}100%{% endif %};">
+            </div>
+        </div>
+
+        <div class="order-info">
+            <p><strong>Estado:</strong> {{ order.get_status_display }}</p>
+            <p><strong>Dirección de Envío:</strong> {{ order.address }}</p>
+            <p><strong>Correo Electrónico:</strong> {{ order.email }}</p>
+            <p><strong>Opciones de Envío:</strong> {{ order.get_delivery_option_display }}</p>
+            <p><strong>Coste Total:</strong> {{ order.total_price_with_shipping }} €</p>
+            <p><strong>Forma de Pago:</strong> {{ order.get_payment_option_display }}</p>
+        </div>
+        {% elif order_id %}
+        <p>No se encontró un pedido con ese localizador.</p>
+        {% endif %}
+        <a href="{% url 'home' %}" class="back-btn">Atrás</a>
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,330 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="cart-detail-container">
+    <h2 class="cart-title">Detalle del Carrito</h2>
+
+    <!-- Bloque para mostrar mensajes -->
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-success">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    {% if cart_items %}
+        {% for cart_item in cart_items %}
+        <div class="cart-item">
+            <div class="cart-item-details">
+                <p class="cart-item-name">{{ cart_item.quantity }} x {{ cart_item.product.name }}</p>
+                <p class="cart-item-price">{{ cart_item.quantity }} x {{ cart_item.product.price }} €</p>
+            </div>
+
+            <!-- Botón para quitar 1 -->
+            <form class="remove-from-cart-form" method="post"
+                action="{% url 'shoppingCart:remove_from_cart' cart_item.product.id %}">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{% url 'shoppingCart:cart_detail' %}">
+                <button type="submit" class="remove-from-cart-btn">
+                    Quitar 1
+                </button>
+            </form>
+
+            <!-- Botón para eliminar todos -->
+            <form class="remove-from-cart-form" method="post"
+                action="{% url 'shoppingCart:remove_from_cart' cart_item.product.id %}">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{% url 'shoppingCart:cart_detail' %}">
+                <input type="hidden" name="remove_all" value="true"> <!-- Indicador de eliminación completa -->
+                <button type="submit" class="remove-all-btn">
+                    Eliminar todos
+                </button>
+            </form>
+    </div>
+    {% endfor %}
+    {% else %}
+        <p class="empty-cart-message"><br> El carrito está vacío. <br>
+            Por favor, añade productos para continuar.</p>
+    {% endif %}
+
+
+    <div class="total">
+        <p class="total-text">Total: <span class="total-amount">{{ precio_total }} €</span></p>
+    </div>
+
+    <p class="shipping-message">
+        El envío se calcula en la pasarela de pagos.<br>
+        <span class="free-shipping">Envío gratuito a partir de 100€</span>
+    </p>    
+
+    <h3 class="shipping-title">Ingresa tu dirección de envío</h3>
+    <p class="login-notice">
+        Debes confirmar los datos de envio antes de pasar al pago
+    </p>
+    <form method="post" novalidate class="shipping-form unified-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="button checkout-button">Confirmar y Proceder al Pago</button>
+    </form>
+</div>
+
+<style>
+    /* Fondo oscuro para toda la página */
+    html,
+    body {
+        background-color: #1e1e2f;
+        /* Fondo oscuro similar al de registro */
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        font-family: 'Georgia', serif;
+    }
+
+    /* Contenedor principal */
+    .cart-detail-container {
+        padding: 20px;
+        background-color: #ffffff;
+        /* Fondo blanco */
+        border-radius: 8px;
+        max-width: 800px;
+        margin: 20px auto;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Títulos */
+    .cart-title,
+    .shipping-title {
+        color: #5e239d;
+        /* Morado oscuro */
+        text-align: center;
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+    }
+
+    /* Cart Items */
+    .cart-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        margin-bottom: 15px;
+        background-color: #fff;
+        /* Fondo blanco para cada item */
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+    .cart-item-details {
+        max-width: 70%;
+    }
+
+    .cart-item-name {
+        font-size: 1rem;
+        color: #333;
+    }
+
+    .cart-item-price {
+        font-size: 0.9rem;
+        color: #666;
+    }
+
+    /* Total */
+    .total {
+        text-align: right;
+        margin-top: 20px;
+    }
+
+    .total-text {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #333;
+        text-align: center;
+    }
+
+    .total-amount {
+        color: #5e239d;
+    }
+
+    /* Shipping Message */
+    .shipping-message {
+        text-align: center;
+        color: #666;
+        font-size: 0.9rem;
+        margin: 20px 0;
+    }
+
+    .free-shipping {
+        font-weight: bold;
+        color: #5e239d;
+    }
+
+    /* Botones */
+    .button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        color: #fff;
+        font-size: 0.9rem;
+        text-decoration: none;
+        cursor: pointer;
+        display: inline-block;
+        transition: background-color 0.3s ease;
+    }
+
+    .remove-from-cart-btn {
+        background: linear-gradient(135deg, #6e1b9c, #b462d1);
+        /* Degradado de morados profundos */
+        color: #fff;
+        padding: 6px 12px;
+        border: 2px solid #5a1b80;
+        /* Borde morado oscuro */
+        border-radius: 6px;
+        font-size: 0.75rem;
+        /* Tamaño de fuente ligeramente más pequeño */
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        box-shadow: 0 2px 4px rgba(90, 27, 128, 0.4);
+        /* Sombra sutil en tono morado */
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        /* Sombra suave en el texto */
+    }
+
+    .remove-from-cart-btn:hover {
+        background: linear-gradient(135deg, #b462d1, #6e1b9c);
+        /* Cambio de colores en el hover */
+        transform: scale(1.03);
+        /* Efecto sutil de expansión al pasar el mouse */
+        box-shadow: 0 3px 6px rgba(90, 27, 128, 0.6);
+        /* Sombra más intensa al hover */
+    }
+
+    .remove-from-cart-btn:active {
+        background: #5a1b80;
+        /* Color sólido púrpura oscuro al hacer clic */
+        transform: scale(0.95);
+        /* Se encoje al hacer clic */
+        box-shadow: 0 1px 3px rgba(90, 27, 128, 0.5);
+        /* Sombra más tenue al hacer clic */
+    }
+
+    .remove-all-btn {
+        background: linear-gradient(135deg, #c0392b, #e74c3c);
+        /* Degradado de tonos rojos */
+        color: #fff;
+        padding: 6px 12px;
+        border: 2px solid #a93226;
+        /* Borde rojo oscuro */
+        border-radius: 6px;
+        font-size: 0.75rem;
+        /* Tamaño de fuente igual al otro botón */
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        box-shadow: 0 2px 4px rgba(165, 50, 45, 0.4);
+        /* Sombra sutil en tono rojo */
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        /* Sombra suave en el texto */
+    }
+
+    .remove-all-btn:hover {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        /* Cambio de colores en el hover */
+        transform: scale(1.03);
+        /* Efecto sutil de expansión al pasar el mouse */
+        box-shadow: 0 3px 6px rgba(165, 50, 45, 0.6);
+        /* Sombra más intensa al hover */
+    }
+
+    .remove-all-btn:active {
+        background: #a93226;
+        /* Color sólido rojo oscuro al hacer clic */
+        transform: scale(0.95);
+        /* Se encoje al hacer clic */
+        box-shadow: 0 1px 3px rgba(165, 50, 45, 0.5);
+        /* Sombra más tenue al hacer clic */
+    }
+
+    .confirm-button {
+        background-color: #3498db;
+        /* Azul para confirmar */
+    }
+
+    .confirm-button:hover {
+        background-color: #2980b9;
+    }
+
+    .checkout-button {
+        background-color: #5e239d;
+        /* Morado oscuro */
+        text-align: center;
+        margin-top: 20px;
+        display: inline-block;  /* Asegura que el botón se trate como un bloque */
+        padding: 10px 20px;     /* Agrega algo de espacio alrededor del texto */
+        border-radius: 5px;     /* Redondea las esquinas */
+        width: auto;            /* Ajusta el tamaño al contenido */
+        font-size: 1rem;        /* Tamaño de la fuente */
+        text-decoration: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        color: white;
+        padding: 10px 15px; 
+        border: none;
+        border-radius: 6px; 
+        width: 100%;
+        font-weight: bold;
+    }
+
+    .checkout-button:hover {
+        background-color: #4c1d8c;
+    }
+
+    /* Asegúrate de que el contenedor del formulario tenga 'text-align: center' */
+    .shipping-form {
+        margin: 20px 0;
+        text-align: center;  /* Esto centra todo el contenido del formulario, incluyendo el botón */
+    }
+    .login-notice {
+        text-align: center;
+        font-size: 0.9rem;
+        color: #5e239d; /* Morado oscuro */
+        margin-bottom: 20px;
+        background-color: #f5f5f5;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+    }
+    .empty-cart-message {
+        text-align: center;
+        font-size: 0.8rem; /* Tamaño del texto */
+        color: #333; /* Color del texto */
+        margin-top: 20px; /* Espaciado superior */
+    }
+    .unified-form {
+        margin: 0 auto; /* Centra el formulario horizontalmente */
+        padding: 20px; /* Añade padding alrededor del formulario */
+        max-width: 600px; /* Define un ancho máximo para el formulario */
+        border: 1px solid #ccc; /* Añade un borde alrededor del formulario */
+        border-radius: 8px; /* Añade bordes redondeados */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Añade una sombra sutil */
+        background-color: #f9f9f9; /* Añade un color de fondo */
+    }
+    .input-field {
+        background-color: #f8f8f8;
+        border: 1px solid #5e239d; 
+        padding: 8px 10px; 
+        border-radius: 6px; 
+        width: 100%;
+        margin-bottom: 10px;
+        font-size: 0.9rem; 
+        color: #333;
+        box-sizing: border-box;
+    }
+
+    .input-field:focus {
+        border-color: #5e239d;
+        outline: none;
+    }
+</style>
+{% endblock %}
