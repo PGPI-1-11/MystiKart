@@ -3,6 +3,7 @@
         "model": "custom_user.User",
         "pk": 1,
         "fields": {
+            "first_name": "Admin",
             "email": "admin@admin.com",
             "password": "pbkdf2_sha256$870000$RdDC3RH0zZjs40M4itPz7V$307hqublJOOs5Hdfg0p6EZA4VTxndv7aJpbQPtjJxLU=",
             "is_superuser": true,
@@ -13,6 +14,7 @@
         "model": "custom_user.User",
         "pk": 2,
         "fields": {
+            "first_name": "User",
             "email": "user@user.com",
             "password": "pbkdf2_sha256$870000$czqBxgsB1V3tKMzefvw0ge$QSKhACU33TzdzQXWDzcknglVzzpjRk30M4NDgfMYFlY=",
             "is_superuser": false,
