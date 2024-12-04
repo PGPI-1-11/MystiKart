@@ -342,6 +342,56 @@
         box-shadow: 0 1px 3px rgba(165, 50, 45, 0.5); /* Sombra más tenue al hacer clic */
     }
 
+    @media (max-width: 768px) {
+    .container {
+        grid-template-columns: 1fr; /* Cambiar a una sola columna en móviles */
+        gap: 10px;
+    }
+
+    .card-wrapper {
+        padding: 10px;
+    }
+
+    .grid-products {
+        grid-template-columns: 1fr; /* Productos en una sola columna */
+    }
+
+    .card-body {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 2rem; /* Reducir el tamaño del título */
+    }
+
+    .card-body h4 {
+        font-size: 1.2rem; /* Ajustar los títulos de productos */
+    }
+
+    .card-body p {
+        font-size: 0.9rem; /* Reducir tamaño de texto en párrafos */
+    }
+
+    .card-body button {
+        padding: 5px 10px;
+        font-size: 0.8rem; /* Botones más compactos */
+    }
+
+    .category-filter form button {
+        font-size: 0.9rem;
+        padding: 8px;
+    }
+    .card img {
+    max-width: 100%;
+    height: auto; /* Mantener proporción */
+}
+    main {
+        padding: 20px 10px;
+    }
+
+}
+
+
 </style>
 
 <main>
