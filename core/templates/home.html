@@ -179,12 +179,14 @@
 
     .cart-section .cart-items {
         margin-top: 10px;
+        margin-right: 10px;
     }
 
     .cart-section .cart-items .cart-item {
         display: flex;
         justify-content: space-between;
         margin-bottom: 10px;
+        margin-right: 10px;
     }
 
     .cart-section .total {
@@ -302,6 +304,7 @@
         transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
         box-shadow: 0 2px 4px rgba(90, 27, 128, 0.4); /* Sombra sutil en tono morado */
         text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Sombra suave en el texto */
+        margin-right: 10px; /* Añade un margen a la derecha del botón "Quitar 1" */
     }
 
     .remove-from-cart-btn:hover {
@@ -340,6 +343,22 @@
         background: #a93226; /* Color sólido rojo oscuro al hacer clic */
         transform: scale(0.95); /* Se encoje al hacer clic */
         box-shadow: 0 1px 3px rgba(165, 50, 45, 0.5); /* Sombra más tenue al hacer clic */
+    }
+
+    /* Añade esto a tu archivo CSS */
+    .tracking-label {
+        color: #333; /* Cambia el color del texto */
+        font-size: 16px; /* Cambia el tamaño de la fuente */
+        font-weight: bold; /* Cambia el peso de la fuente */
+        margin-right: 10px; /* Añade un margen a la derecha */
+    }
+
+    .tracking-input {
+        margin: 10px 0; /* Añade un margen a la derecha del cuadro de texto */
+    }
+
+    .add-to-cart-container {
+        margin-top: 20px; /* Añade un margen superior para separar del stock del producto */
     }
 
 </style>
@@ -440,13 +459,15 @@
                                         </div>
                                   
                                         <!-- Formulario para añadir al carrito -->
-                                        <form action="{% url 'shoppingCart:add_to_cart' product.id %}" method="POST">
-                                            {% csrf_token %}
-                                            <input type="number" name="quantity" min="1" max="{{ product.stock }}" value="1" class="quantity-input">
-                                            <button type="submit" class="add-to-cart-btn">
-                                                Añadir al carrito
-                                            </button>
-                                        </form>                                                                              
+                                        <div class="add-to-cart-container">
+                                            <form action="{% url 'shoppingCart:add_to_cart' product.id %}" method="POST">
+                                                {% csrf_token %}
+                                                <input type="number" name="quantity" min="1" max="{{ product.stock }}" value="1" class="quantity-input">
+                                                <button type="submit" class="add-to-cart-btn">
+                                                    Añadir al carrito
+                                                </button>
+                                            </form>
+                                        </div>                                                                              
                                     </div>
                                 </div>
                             {% endfor %}
@@ -499,9 +520,9 @@
                 <h2 class="text-2xl text-center">Localizador de pedidos</h2>
                 <div class="px-6 py-12 rounded-xl flex items-center justify-center">
                     <form method="get" action="{% url 'order_search' %}">
-                        <label for="id_tracking">ID de Tracking:</label>
-                        <input type="text" id="id_tracking" name="id_tracking" required>
-                        <button type="submit">Buscar Pedido</button>
+                        <label for="id_tracking" class="tracking-label">ID de Tracking:</label>
+                        <input type="text" id="id_tracking" name="id_tracking" class="tracking-input" required>
+                        <button type="submit" class="tracking-button">Buscar Pedido</button>
                     </form>
                 </div>
             </div>

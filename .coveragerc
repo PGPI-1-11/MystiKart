@@ -1,0 +1,11 @@
+[run]
+source = MystiKart
+omit =
+    */migrations/*
+    */tests/*
+    */settings/*
+    manage.py
+
+[report]
+show_missing = True
+skip_covered = True
