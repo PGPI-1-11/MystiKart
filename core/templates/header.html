@@ -208,4 +208,49 @@
         color: #fff;
         margin-left: 5px;
     }
+
+    @media (max-width: 768px) {
+    /* Header: ajusta el diseño */
+    .nav-container {
+        flex-wrap: wrap; /* Permite que los elementos se distribuyan en varias filas */
+        padding: 10px; /* Reduce el relleno */
+    }
+
+    /* Logo */
+    .logo-container {
+        flex: 1 1 100%; /* Ocupa una fila completa */
+        text-align: center; /* Centra el logo */
+    }
+
+    .logo {
+        height: 40px; /* Ajusta el tamaño del logo */
+    }
+
+    /* Barra de búsqueda */
+    .search-container {
+        flex: 1 1 100%; /* Ocupa una fila completa */
+        margin: 10px 0; /* Añade espacio entre el logo y la búsqueda */
+    }
+
+    .search-form {
+        max-width: 100%; /* Asegura que ocupe todo el ancho disponible */
+    }
+
+    /* Usuario y carrito */
+    .user-container,
+    .cart-container {
+        flex: 1 1 auto; /* Deja que se ajusten automáticamente */
+        justify-content: center; /* Centra el contenido */
+        margin: 5px 0; /* Añade algo de espacio entre filas */
+    }
+
+    .cart-button {
+        font-size: 0.9rem; /* Reduce el tamaño del texto */
+    }
+
+    .welcome-text {
+        font-size: 0.8rem; /* Ajusta el tamaño del texto */
+    }
+}
+
 </style>
