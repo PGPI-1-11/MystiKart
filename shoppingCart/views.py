@@ -367,10 +367,7 @@ def order_confirmation(request):
         # Si el usuario está autenticado, obtener su dirección de envío
         shipping_address = ShippingAddress.objects.filter(user=request.user).latest('id')
         shipping_address_text = (
-            "Datos de envío:\n"
-            f"Calle: {shipping_address.address}, {shipping_address.postal_code},\n"
-            f"Ciudad: {shipping_address.city},\n"
-            f"País: {shipping_address.country}"
+            f"{shipping_address.address}, {shipping_address.city}, {shipping_address.country}"
         )
     else:
         # Si el usuario no está autenticado, usar los datos de la sesión (si existen)
@@ -385,10 +382,7 @@ def order_confirmation(request):
             )
             shipping_address.save()
             shipping_address_text = (
-                "Datos de envío:\n"
-                f"Calle: {shipping_address.address}, {shipping_address.postal_code}\n"
-                f"Ciudad: {shipping_address.city},\n"
-                f"País: {shipping_address.country}"
+                f"{shipping_address.address}, {shipping_address.city}, {shipping_address.country}"
             )
 
     # Crear el pedido

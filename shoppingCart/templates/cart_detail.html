@@ -62,7 +62,7 @@
     <p class="login-notice">
         Debes confirmar los datos de envio antes de pasar al pago
     </p>
-    <form method="post" novalidate class="shipping-form">
+    <form method="post" novalidate class="shipping-form unified-form">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit" class="button checkout-button">Confirmar y Proceder al Pago</button>
@@ -268,10 +268,16 @@
         text-decoration: none;
         cursor: pointer;
         transition: background-color 0.3s ease;
+        color: white;
+        padding: 10px 15px; 
+        border: none;
+        border-radius: 6px; 
+        width: 100%;
+        font-weight: bold;
     }
 
     .checkout-button:hover {
-        background-color: #452070;
+        background-color: #4c1d8c;
     }
 
     /* Asegúrate de que el contenedor del formulario tenga 'text-align: center' */
@@ -294,6 +300,31 @@
         font-size: 0.8rem; /* Tamaño del texto */
         color: #333; /* Color del texto */
         margin-top: 20px; /* Espaciado superior */
+    }
+    .unified-form {
+        margin: 0 auto; /* Centra el formulario horizontalmente */
+        padding: 20px; /* Añade padding alrededor del formulario */
+        max-width: 600px; /* Define un ancho máximo para el formulario */
+        border: 1px solid #ccc; /* Añade un borde alrededor del formulario */
+        border-radius: 8px; /* Añade bordes redondeados */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Añade una sombra sutil */
+        background-color: #f9f9f9; /* Añade un color de fondo */
+    }
+    .input-field {
+        background-color: #f8f8f8;
+        border: 1px solid #5e239d; 
+        padding: 8px 10px; 
+        border-radius: 6px; 
+        width: 100%;
+        margin-bottom: 10px;
+        font-size: 0.9rem; 
+        color: #333;
+        box-sizing: border-box;
+    }
+
+    .input-field:focus {
+        border-color: #5e239d;
+        outline: none;
     }
 </style>
 {% endblock %}
