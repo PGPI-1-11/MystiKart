@@ -12,7 +12,7 @@
         <div class="nav-container">
 
             <!-- Left Section: Logo -->
-            <div class="logo-container">
+            <div class="logo-container {% if request.resolver_match.view_name != 'home' %}centered{% endif %}">
                 <a href="{% url 'home' %}">
                     <img src="{% static 'images/logo.jpeg' %}" alt="Logo" class="logo">
                 </a>
@@ -96,6 +96,21 @@
     .logo-container {
         flex-shrink: 0; /* Evita que el logo se reduzca */
     }
+
+    .logo-container.centered {
+        margin: 0 auto; /* Centra el contenedor horizontalmente */
+        text-align: center; /* Asegura que el contenido esté centrado */
+        flex: 1 1 100%; /* Ocupa todo el ancho disponible */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* Opcional: reduce tamaño del logo si es necesario */
+    .logo-container.centered .logo {
+        height: 40px; /* Ajusta el tamaño para que encaje mejor */
+        width: auto;
+    } 
 
     .logo {
         height: 50px; /* Ajusta la altura del logo */
